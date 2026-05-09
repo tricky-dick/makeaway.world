@@ -49,6 +49,12 @@
             Side projects, websites, experiments, and learning new skills by
             actually making things.
           </p>
+          <a class="card" href="/game">
+           <h2>Game</h2>
+           <p>
+                Play Trail Runner — a small Makeaway jumping game for desktop and phone.
+           </p>
+          </a>
         </a>
 
         <a class="card" href="/money">
@@ -109,9 +115,9 @@
     line-height: 1.6;
   }
 
-  .cards {
+   .cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 18px;
     margin-top: 72px;
   }

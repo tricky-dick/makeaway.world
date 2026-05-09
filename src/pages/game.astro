@@ -1,0 +1,594 @@
+---
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trail Runner | Makeaway</title>
+    <meta
+      name="description"
+      content="A small Makeaway trail runner game. Tap, click, or press space to jump."
+    />
+  </head>
+
+  <body>
+    <main>
+      <a class="back-link" href="/">← Back to home</a>
+
+      <section class="hero">
+        <p class="eyebrow">Makeaway Game</p>
+        <h1>Trail Runner</h1>
+        <p class="intro">
+          Tap, click, or press <strong>Space</strong> to jump the trail obstacles.
+        </p>
+      </section>
+
+      <section class="game-shell">
+        <div class="hud">
+          <div>
+            <span>Score</span>
+            <strong id="score">0</strong>
+          </div>
+
+          <div>
+            <span>Best</span>
+            <strong id="best">0</strong>
+          </div>
+        </div>
+
+        <canvas id="game" width="1000" height="420"></canvas>
+
+        <div class="game-message" id="message">
+          <strong>Tap to start</strong>
+          <span>Jump over rocks, logs, and trail markers.</span>
+        </div>
+      </section>
+
+      <p class="hint">
+        Desktop: Space / click. Phone: tap anywhere on the game.
+      </p>
+    </main>
+
+    <script is:inline>
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+      const scoreEl = document.getElementById("score");
+      const bestEl = document.getElementById("best");
+      const messageEl = document.getElementById("message");
+
+      const DPR = Math.max(1, window.devicePixelRatio || 1);
+      const baseWidth = 1000;
+      const baseHeight = 420;
+
+      let running = false;
+      let gameOver = false;
+      let score = 0;
+      let best = Number(localStorage.getItem("makeaway-best-score") || 0);
+      let speed = 6;
+      let frame = 0;
+      let obstacles = [];
+      let particles = [];
+
+      bestEl.textContent = best;
+
+      const player = {
+        x: 130,
+        y: 295,
+        width: 48,
+        height: 64,
+        velocityY: 0,
+        grounded: true,
+      };
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * DPR;
+        canvas.height = rect.height * DPR;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      function resetGame() {
+        running = true;
+        gameOver = false;
+        score = 0;
+        speed = 6;
+        frame = 0;
+        obstacles = [];
+        particles = [];
+
+        player.y = 295;
+        player.velocityY = 0;
+        player.grounded = true;
+
+        messageEl.classList.remove("show");
+      }
+
+      function jump() {
+        if (!running || gameOver) {
+          resetGame();
+          return;
+        }
+
+        if (player.grounded) {
+          player.velocityY = -17;
+          player.grounded = false;
+          createDust(player.x + 15, player.y + player.height);
+        }
+      }
+
+      function createDust(x, y) {
+        for (let i = 0; i < 10; i++) {
+          particles.push({
+            x,
+            y,
+            size: Math.random() * 4 + 2,
+            vx: Math.random() * -3 - 1,
+            vy: Math.random() * -2,
+            life: 28,
+          });
+        }
+      }
+
+      function spawnObstacle() {
+        const types = [
+          { type: "rock", width: 42, height: 38 },
+          { type: "log", width: 62, height: 30 },
+          { type: "marker", width: 28, height: 58 },
+        ];
+
+        const pick = types[Math.floor(Math.random() * types.length)];
+
+        obstacles.push({
+          ...pick,
+          x: baseWidth + 40,
+          y: 360 - pick.height,
+        });
+      }
+
+      function drawBackground() {
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, "#11220c");
+        gradient.addColorStop(0.6, "#0c2002");
+        gradient.addColorStop(1, "#081203");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.beginPath();
+        ctx.arc(width - 125, 85, 46, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(201, 216, 166, 0.9)";
+        ctx.fill();
+
+        drawMountainRange(0.18, "#23351b", 185, 0.2);
+        drawMountainRange(0.35, "#304822", 230, 0.35);
+
+        ctx.fillStyle = "#172117";
+        ctx.fillRect(0, 360, width, height - 360);
+
+        ctx.strokeStyle = "rgba(201, 216, 166, 0.35)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, 360);
+        ctx.lineTo(width, 360);
+        ctx.stroke();
+
+        ctx.strokeStyle = "rgba(245, 241, 232, 0.16)";
+        ctx.lineWidth = 3;
+
+        for (let i = 0; i < 18; i++) {
+          const x = ((i * 110 - frame * speed * 1.5) % (width + 120)) - 80;
+          ctx.beginPath();
+          ctx.moveTo(x, 392);
+          ctx.lineTo(x + 54, 392);
+          ctx.stroke();
+        }
+      }
+
+      function drawMountainRange(parallax, color, baseY, alpha) {
+        const width = canvas.clientWidth;
+        const offset = (frame * speed * parallax) % width;
+
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+
+        for (let start = -width; start < width * 2; start += width) {
+          ctx.beginPath();
+          ctx.moveTo(start - offset, baseY);
+
+          ctx.lineTo(start + 120 - offset, baseY - 80);
+          ctx.lineTo(start + 250 - offset, baseY);
+          ctx.lineTo(start + 410 - offset, baseY - 125);
+          ctx.lineTo(start + 610 - offset, baseY);
+          ctx.lineTo(start + 780 - offset, baseY - 95);
+          ctx.lineTo(start + 1000 - offset, baseY);
+
+          ctx.lineTo(start + width - offset, baseY + 200);
+          ctx.lineTo(start - offset, baseY + 200);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.globalAlpha = 1;
+      }
+
+      function drawPlayer() {
+        const x = player.x;
+        const y = player.y;
+
+        ctx.fillStyle = "#c9d8a6";
+        roundedRect(x, y + 12, player.width, player.height - 12, 14);
+        ctx.fill();
+
+        ctx.fillStyle = "#6d7f45";
+        roundedRect(x - 13, y + 25, 18, 32, 8);
+        ctx.fill();
+
+        ctx.fillStyle = "#f5f1e8";
+        ctx.beginPath();
+        ctx.arc(x + 26, y + 10, 17, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#172117";
+        ctx.fillRect(x + 8, y - 3, 36, 8);
+        ctx.fillRect(x + 15, y - 12, 22, 12);
+
+        const step = Math.sin(frame * 0.25) * 8;
+        ctx.strokeStyle = "#f5f1e8";
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(x + 18, y + player.height - 8);
+        ctx.lineTo(x + 10 + step, y + player.height + 12);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + 34, y + player.height - 8);
+        ctx.lineTo(x + 42 - step, y + player.height + 12);
+        ctx.stroke();
+      }
+
+      function drawObstacle(obstacle) {
+        if (obstacle.type === "rock") {
+          ctx.fillStyle = "#7d8068";
+          ctx.beginPath();
+          ctx.moveTo(obstacle.x, obstacle.y + obstacle.height);
+          ctx.lineTo(obstacle.x + 12, obstacle.y + 6);
+          ctx.lineTo(obstacle.x + 34, obstacle.y);
+          ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        if (obstacle.type === "log") {
+          ctx.fillStyle = "#6f4c2d";
+          roundedRect(obstacle.x, obstacle.y + 8, obstacle.width, 20, 10);
+          ctx.fill();
+
+          ctx.fillStyle = "#9b7447";
+          ctx.beginPath();
+          ctx.arc(obstacle.x + obstacle.width - 8, obstacle.y + 18, 10, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (obstacle.type === "marker") {
+          ctx.fillStyle = "#c9d8a6";
+          roundedRect(obstacle.x + 9, obstacle.y, 10, obstacle.height, 4);
+          ctx.fill();
+
+          ctx.fillStyle = "#f5f1e8";
+          roundedRect(obstacle.x, obstacle.y + 4, obstacle.width, 18, 5);
+          ctx.fill();
+        }
+      }
+
+      function drawParticles() {
+        particles.forEach((p) => {
+          ctx.globalAlpha = Math.max(p.life / 28, 0);
+          ctx.fillStyle = "#c9d8a6";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+      }
+
+      function update() {
+        if (!running || gameOver) return;
+
+        frame++;
+        score += 1;
+        speed += 0.002;
+
+        scoreEl.textContent = Math.floor(score / 5);
+
+        player.velocityY += 0.85;
+        player.y += player.velocityY;
+
+        if (player.y >= 295) {
+          player.y = 295;
+          player.velocityY = 0;
+          player.grounded = true;
+        }
+
+        if (frame % Math.max(55, Math.floor(110 - speed * 4)) === 0) {
+          spawnObstacle();
+        }
+
+        obstacles.forEach((obstacle) => {
+          obstacle.x -= speed;
+        });
+
+        obstacles = obstacles.filter((obstacle) => obstacle.x + obstacle.width > -50);
+
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 1;
+        });
+
+        particles = particles.filter((p) => p.life > 0);
+
+        checkCollision();
+      }
+
+      function checkCollision() {
+        for (const obstacle of obstacles) {
+          const padding = 10;
+
+          const hit =
+            player.x + padding < obstacle.x + obstacle.width &&
+            player.x + player.width - padding > obstacle.x &&
+            player.y + padding < obstacle.y + obstacle.height &&
+            player.y + player.height - padding > obstacle.y;
+
+          if (hit) {
+            endGame();
+          }
+        }
+      }
+
+      function endGame() {
+        gameOver = true;
+        running = false;
+
+        const finalScore = Math.floor(score / 5);
+
+        if (finalScore > best) {
+          best = finalScore;
+          localStorage.setItem("makeaway-best-score", best);
+          bestEl.textContent = best;
+        }
+
+        messageEl.innerHTML = `
+          <strong>Trail ended</strong>
+          <span>Score: ${finalScore}. Tap to run again.</span>
+        `;
+        messageEl.classList.add("show");
+      }
+
+      function roundedRect(x, y, w, h, r) {
+        ctx.beginPath();
+
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, w, h, r);
+        } else {
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+        }
+      }
+
+      function draw() {
+        drawBackground();
+
+        obstacles.forEach(drawObstacle);
+        drawParticles();
+        drawPlayer();
+
+        if (!running && !gameOver) {
+          messageEl.classList.add("show");
+        }
+
+        update();
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+
+      window.addEventListener("keydown", (event) => {
+        if (event.code === "Space" || event.code === "ArrowUp") {
+          event.preventDefault();
+          jump();
+        }
+      });
+
+      canvas.addEventListener("pointerdown", jump);
+      messageEl.addEventListener("pointerdown", jump);
+
+      resizeCanvas();
+      draw();
+    </script>
+  </body>
+</html>
+
+<style>
+  :root {
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    color: #f5f1e8;
+    background: #172117;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(124, 185, 9, 0.25), transparent 35%),
+      linear-gradient(135deg, #111811, #0c2002);
+  }
+
+  main {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 48px 0 80px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 42px;
+    color: #c9d8a6;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: #c9d8a6;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  .intro {
+    max-width: 720px;
+    margin: 24px 0 0;
+    color: #ded8c8;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    line-height: 1.6;
+  }
+
+  .game-shell {
+    position: relative;
+    overflow: hidden;
+    margin-top: 48px;
+    border: 1px solid rgba(245, 241, 232, 0.18);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .hud {
+    position: absolute;
+    z-index: 5;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .hud div {
+    border: 1px solid rgba(245, 241, 232, 0.16);
+    border-radius: 18px;
+    padding: 10px 14px;
+    background: rgba(8, 18, 3, 0.45);
+    backdrop-filter: blur(10px);
+  }
+
+  .hud span {
+    display: block;
+    color: #c9d8a6;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hud strong {
+    display: block;
+    margin-top: 2px;
+    font-size: 1.4rem;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: min(58vw, 420px);
+    min-height: 300px;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+
+  .game-message {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: none;
+    place-items: center;
+    padding: 24px;
+    text-align: center;
+    background: rgba(8, 18, 3, 0.42);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+
+  .game-message.show {
+    display: grid;
+  }
+
+  .game-message strong {
+    display: block;
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: -0.05em;
+  }
+
+  .game-message span {
+    display: block;
+    margin-top: 12px;
+    color: #ded8c8;
+    font-size: 1.1rem;
+  }
+
+  .hint {
+    margin: 18px 0 0;
+    color: #d5ccb8;
+    text-align: center;
+  }
+
+  @media (max-width: 700px) {
+    main {
+      padding-top: 32px;
+    }
+
+    .back-link {
+      margin-bottom: 28px;
+    }
+
+    .game-shell {
+      border-radius: 22px;
+    }
+
+    canvas {
+      min-height: 360px;
+    }
+  }
+</style>
