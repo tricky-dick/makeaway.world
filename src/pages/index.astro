@@ -14,7 +14,11 @@
 
   <body>
     <main>
-      <p class="eyebrow">Makeaway</p>
+      <div class="logo-mark" aria-label="Makeaway World">
+  <span class="logo-top">Make</span>
+  <span class="logo-path">a</span>
+  <span class="logo-bottom">Way</span>
+</div>
 
       <h1>A personal field guide for building a freer life.</h1>
 
@@ -71,13 +75,55 @@
     padding: 96px 0;
   }
 
-  .eyebrow {
-    margin: 0 0 18px;
-    color: #c9d8a6;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+.logo-mark {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 26px;
+  color: #f5f1e8;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.logo-top,
+.logo-bottom {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  line-height: 1;
+}
+
+.logo-path {
+  display: inline-grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 2px solid #c9d8a6;
+  border-radius: 999px;
+  color: #172117;
+  background: #c9d8a6;
+  font-size: 1.1rem;
+  line-height: 1;
+  position: relative;
+}
+
+.logo-path::before,
+.logo-path::after {
+  content: "";
+  position: absolute;
+  width: 1.4rem;
+  height: 2px;
+  background: #c9d8a6;
+  top: 50%;
+}
+
+.logo-path::before {
+  right: 100%;
+}
+
+.logo-path::after {
+  left: 100%;
+
   }
 
   h1 {
