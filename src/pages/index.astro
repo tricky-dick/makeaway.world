@@ -14,11 +14,11 @@
 
   <body>
     <main>
-      <div class="logo-mark" aria-label="Makeaway World">
-  <span class="logo-top">Make</span>
-  <span class="logo-path">a</span>
-  <span class="logo-bottom">Way</span>
-</div>
+      <img
+        class="site-logo"
+        src="/makeaway-logo-transparent.png"
+        alt="Make a Way logo"
+      />
 
       <h1>A personal field guide for building a freer life.</h1>
 
@@ -28,25 +28,36 @@
       </p>
 
       <section class="cards">
-        <article>
+        <a class="card" href="/escape">
           <h2>Escape</h2>
-          <p>Thoughts on work, burnout, freedom, and designing a life that feels more your own.</p>
-        </article>
+          <p>
+            Thoughts on work, burnout, freedom, and designing a life that feels
+            more your own.
+          </p>
+        </a>
 
-        <article>
+        <a class="card" href="/outside">
           <h2>Outside</h2>
-          <p>Hiking, camping, nature, gear, and the places that reset your brain.</p>
-        </article>
+          <p>
+            Hiking, camping, nature, gear, and the places that reset your brain.
+          </p>
+        </a>
 
-        <article>
+        <a class="card" href="/build">
           <h2>Build</h2>
-          <p>Side projects, websites, experiments, and learning new skills by actually making things.</p>
-        </article>
+          <p>
+            Side projects, websites, experiments, and learning new skills by
+            actually making things.
+          </p>
+        </a>
 
-        <article>
+        <a class="card" href="/money">
           <h2>Money</h2>
-          <p>Investing, dividends, options, and the long road toward more independence.</p>
-        </article>
+          <p>
+            Investing, dividends, options, and the long road toward more
+            independence.
+          </p>
+        </a>
       </section>
     </main>
   </body>
@@ -55,8 +66,8 @@
 <style>
   :root {
     font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
     color: #f5f1e8;
     background: #172117;
   }
@@ -65,8 +76,8 @@
     margin: 0;
     min-height: 100vh;
     background:
-      radial-gradient(circle at top left, rgba(144, 173, 110, 0.25), transparent 35%),
-      linear-gradient(135deg, #111811, #26351f);
+      radial-gradient(circle at top left, rgba(124, 185, 9, 0.25), transparent 35%),
+      linear-gradient(135deg, #111811, #0c2002);
   }
 
   main {
@@ -75,55 +86,11 @@
     padding: 96px 0;
   }
 
-.logo-mark {
-  display: inline-grid;
-  grid-template-columns: auto auto auto;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 0 0 26px;
-  color: #f5f1e8;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-}
-
-.logo-top,
-.logo-bottom {
-  font-size: clamp(1.4rem, 3vw, 2.1rem);
-  line-height: 1;
-}
-
-.logo-path {
-  display: inline-grid;
-  place-items: center;
-  width: 2.15rem;
-  height: 2.15rem;
-  border: 2px solid #c9d8a6;
-  border-radius: 999px;
-  color: #172117;
-  background: #c9d8a6;
-  font-size: 1.1rem;
-  line-height: 1;
-  position: relative;
-}
-
-.logo-path::before,
-.logo-path::after {
-  content: "";
-  position: absolute;
-  width: 1.4rem;
-  height: 2px;
-  background: #c9d8a6;
-  top: 50%;
-}
-
-.logo-path::before {
-  right: 100%;
-}
-
-.logo-path::after {
-  left: 100%;
-
+  .site-logo {
+    width: min(520px, 100%);
+    height: auto;
+    display: block;
+    margin: 0 0 34px;
   }
 
   h1 {
@@ -149,28 +116,58 @@
     margin-top: 72px;
   }
 
-  article {
+  .card,
+  .card:visited {
+    display: block;
     border: 1px solid rgba(245, 241, 232, 0.18);
     border-radius: 24px;
     padding: 24px;
     background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(10px);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      box-shadow 180ms ease;
   }
 
-  article h2 {
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 216, 166, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .card:focus-visible {
+    outline: 3px solid #c9d8a6;
+    outline-offset: 4px;
+  }
+
+  .card h2 {
     margin: 0 0 12px;
+    color: #f5f1e8;
     font-size: 1.2rem;
+    text-decoration: none;
   }
 
-  article p {
+  .card p {
     margin: 0;
     color: #d5ccb8;
     line-height: 1.55;
+    text-decoration: none;
   }
 
   @media (max-width: 800px) {
     main {
       padding: 64px 0;
+    }
+
+    .site-logo {
+      width: min(420px, 100%);
+      margin-bottom: 30px;
     }
 
     .cards {
