@@ -1,11 +1,135 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Makeaway</title>
+    <meta
+      name="description"
+      content="A personal field guide for building a freer life through hiking, side projects, money, travel, and figuring things out along the way."
+    />
+  </head>
+
+  <body>
+    <main>
+      <p class="eyebrow">Makeaway</p>
+
+      <h1>A personal field guide for building a freer life.</h1>
+
+      <p class="intro">
+        Notes on hiking, escaping the rat race, side projects, money, travel,
+        and figuring things out along the way.
+      </p>
+
+      <section class="cards">
+        <article>
+          <h2>Escape</h2>
+          <p>Thoughts on work, burnout, freedom, and designing a life that feels more your own.</p>
+        </article>
+
+        <article>
+          <h2>Outside</h2>
+          <p>Hiking, camping, nature, gear, and the places that reset your brain.</p>
+        </article>
+
+        <article>
+          <h2>Build</h2>
+          <p>Side projects, websites, experiments, and learning new skills by actually making things.</p>
+        </article>
+
+        <article>
+          <h2>Money</h2>
+          <p>Investing, dividends, options, and the long road toward more independence.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    color: #f5f1e8;
+    background: #172117;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(144, 173, 110, 0.25), transparent 35%),
+      linear-gradient(135deg, #111811, #26351f);
+  }
+
+  main {
+    width: min(980px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 96px 0;
+  }
+
+  .eyebrow {
+    margin: 0 0 18px;
+    color: #c9d8a6;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 820px;
+    margin: 0;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  .intro {
+    max-width: 680px;
+    margin: 28px 0 0;
+    color: #ded8c8;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.6;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 72px;
+  }
+
+  article {
+    border: 1px solid rgba(245, 241, 232, 0.18);
+    border-radius: 24px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+  }
+
+  article h2 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+  }
+
+  article p {
+    margin: 0;
+    color: #d5ccb8;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 800px) {
+    main {
+      padding: 64px 0;
+    }
+
+    .cards {
+      grid-template-columns: 1fr;
+      margin-top: 48px;
+    }
+  }
+</style>
