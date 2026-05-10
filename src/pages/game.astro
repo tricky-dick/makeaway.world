@@ -20,18 +20,23 @@
         <p class="eyebrow">Makeaway Game</p>
         <h1>Trail Runner</h1>
         <p class="intro">
-          Tap, click, or press <strong>Space</strong> to jump the trail obstacles.
+          Escape the rat race. Tap, click, or press <strong>Space</strong> to jump.
         </p>
       </section>
 
       <section class="game-shell">
         <div class="hud">
-          <div>
+          <div class="hud-box">
             <span>Score</span>
             <strong id="score">0</strong>
           </div>
 
-          <div>
+          <div class="hud-box stage-pill">
+            <span id="stage-name">Rat Race</span>
+            <small id="stage-subtitle">Keep moving.</small>
+          </div>
+
+          <div class="hud-box">
             <span>Best</span>
             <strong id="best">0</strong>
           </div>
@@ -41,7 +46,7 @@
 
         <div class="game-message" id="message">
           <strong>Tap to start</strong>
-          <span>Jump over rocks, logs, and trail markers.</span>
+          <span>Jump the obstacles. Keep making a way.</span>
         </div>
       </section>
 
@@ -56,10 +61,11 @@
       const scoreEl = document.getElementById("score");
       const bestEl = document.getElementById("best");
       const messageEl = document.getElementById("message");
+      const stageNameEl = document.getElementById("stage-name");
+      const stageSubtitleEl = document.getElementById("stage-subtitle");
 
       const DPR = Math.max(1, window.devicePixelRatio || 1);
       const baseWidth = 1000;
-      const baseHeight = 420;
 
       let running = false;
       let gameOver = false;
@@ -69,8 +75,72 @@
       let frame = 0;
       let obstacles = [];
       let particles = [];
+      let nextObstacleFrame = 90;
 
       bestEl.textContent = best;
+
+      const stages = [
+        {
+          minScore: 0,
+          name: "Rat Race",
+          subtitle: "Keep moving.",
+          skyTop: "#252832",
+          skyBottom: "#111318",
+          ground: "#171a1f",
+          mountainBack: "#303540",
+          mountainMid: "#262b34",
+          sun: "rgba(245, 241, 232, 0.35)",
+          trailLine: "rgba(245, 241, 232, 0.12)",
+        },
+        {
+          minScore: 100,
+          name: "Backroad",
+          subtitle: "Out of the noise.",
+          skyTop: "#36414b",
+          skyBottom: "#202818",
+          ground: "#1a2412",
+          mountainBack: "#3a4a31",
+          mountainMid: "#26371f",
+          sun: "rgba(217, 201, 142, 0.62)",
+          trailLine: "rgba(245, 241, 232, 0.16)",
+        },
+        {
+          minScore: 250,
+          name: "Pine Woods",
+          subtitle: "Less noise. More signal.",
+          skyTop: "#2b4a3a",
+          skyBottom: "#13210f",
+          ground: "#172117",
+          mountainBack: "#304822",
+          mountainMid: "#1d321b",
+          sun: "rgba(201, 216, 166, 0.72)",
+          trailLine: "rgba(245, 241, 232, 0.18)",
+        },
+        {
+          minScore: 500,
+          name: "Coastal Trail",
+          subtitle: "Sand, scrub, and open air.",
+          skyTop: "#547f91",
+          skyBottom: "#233b2a",
+          ground: "#1a2112",
+          mountainBack: "#5c6f46",
+          mountainMid: "#314522",
+          sun: "rgba(232, 213, 154, 0.78)",
+          trailLine: "rgba(245, 241, 232, 0.22)",
+        },
+        {
+          minScore: 800,
+          name: "Homestead",
+          subtitle: "Build the life.",
+          skyTop: "#5f7f52",
+          skyBottom: "#172117",
+          ground: "#172117",
+          mountainBack: "#526b3a",
+          mountainMid: "#263f22",
+          sun: "rgba(232, 213, 154, 0.88)",
+          trailLine: "rgba(245, 241, 232, 0.24)",
+        },
+      ];
 
       const player = {
         x: 130,
@@ -80,6 +150,51 @@
         velocityY: 0,
         grounded: true,
       };
+
+      function getCurrentScore() {
+        return Math.floor(score / 5);
+      }
+
+      function getCurrentStage() {
+        const currentScore = getCurrentScore();
+        let currentStage = stages[0];
+
+        for (const stage of stages) {
+          if (currentScore >= stage.minScore) {
+            currentStage = stage;
+          }
+        }
+
+        return currentStage;
+      }
+
+      function randomBetween(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function scheduleNextObstacle() {
+        const currentScore = getCurrentScore();
+
+        let minGap = 70;
+        let maxGap = 130;
+
+        if (currentScore > 250) {
+          minGap = 58;
+          maxGap = 115;
+        }
+
+        if (currentScore > 500) {
+          minGap = 48;
+          maxGap = 100;
+        }
+
+        if (currentScore > 800) {
+          minGap = 42;
+          maxGap = 90;
+        }
+
+        nextObstacleFrame = frame + randomBetween(minGap, maxGap);
+      }
 
       function resizeCanvas() {
         const rect = canvas.getBoundingClientRect();
@@ -96,6 +211,7 @@
         frame = 0;
         obstacles = [];
         particles = [];
+        nextObstacleFrame = 90;
 
         player.y = 295;
         player.velocityY = 0;
@@ -131,28 +247,68 @@
       }
 
       function spawnObstacle() {
-        const types = [
+        const stage = getCurrentStage();
+
+        let types = [
           { type: "rock", width: 42, height: 38 },
           { type: "log", width: 62, height: 30 },
           { type: "marker", width: 28, height: 58 },
         ];
 
+        if (stage.name === "Rat Race") {
+          types = [
+            { type: "marker", width: 28, height: 58 },
+            { type: "log", width: 64, height: 30 },
+            { type: "rock", width: 44, height: 40 },
+          ];
+        }
+
+        if (stage.name === "Coastal Trail") {
+          types = [
+            { type: "grass", width: 34, height: 54 },
+            { type: "rock", width: 42, height: 36 },
+            { type: "log", width: 68, height: 28 },
+          ];
+        }
+
+        if (stage.name === "Homestead") {
+          types = [
+            { type: "crate", width: 46, height: 42 },
+            { type: "log", width: 68, height: 28 },
+            { type: "marker", width: 28, height: 58 },
+          ];
+        }
+
         const pick = types[Math.floor(Math.random() * types.length)];
 
         obstacles.push({
           ...pick,
-          x: baseWidth + 40,
+          x: baseWidth + randomBetween(30, 90),
           y: 360 - pick.height,
         });
+
+        if (getCurrentScore() > 450 && Math.random() < 0.18) {
+          const secondPick = types[Math.floor(Math.random() * types.length)];
+
+          obstacles.push({
+            ...secondPick,
+            x: baseWidth + randomBetween(150, 240),
+            y: 360 - secondPick.height,
+          });
+        }
       }
 
       function drawBackground() {
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
+        const stage = getCurrentStage();
+
+        stageNameEl.textContent = stage.name;
+        stageSubtitleEl.textContent = stage.subtitle;
 
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, "#11220c");
-        gradient.addColorStop(0.6, "#0c2002");
+        gradient.addColorStop(0, stage.skyTop);
+        gradient.addColorStop(0.62, stage.skyBottom);
         gradient.addColorStop(1, "#081203");
 
         ctx.fillStyle = gradient;
@@ -160,13 +316,33 @@
 
         ctx.beginPath();
         ctx.arc(width - 125, 85, 46, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(201, 216, 166, 0.9)";
+        ctx.fillStyle = stage.sun;
         ctx.fill();
 
-        drawMountainRange(0.18, "#23351b", 185, 0.2);
-        drawMountainRange(0.35, "#304822", 230, 0.35);
+        if (stage.name === "Rat Race") {
+          drawCityDetails(width, height);
+        } else {
+          drawMountainRange(0.18, stage.mountainBack, 185, 0.18);
+          drawMountainRange(0.35, stage.mountainMid, 230, 0.32);
+        }
 
-        ctx.fillStyle = "#172117";
+        if (stage.name === "Backroad") {
+          drawBackroadDetails(width, height);
+        }
+
+        if (stage.name === "Pine Woods") {
+          drawPineDetails(width, height);
+        }
+
+        if (stage.name === "Coastal Trail") {
+          drawCoastalDetails(width, height);
+        }
+
+        if (stage.name === "Homestead") {
+          drawHomesteadDetails(width, height);
+        }
+
+        ctx.fillStyle = stage.ground;
         ctx.fillRect(0, 360, width, height - 360);
 
         ctx.strokeStyle = "rgba(201, 216, 166, 0.35)";
@@ -176,7 +352,7 @@
         ctx.lineTo(width, 360);
         ctx.stroke();
 
-        ctx.strokeStyle = "rgba(245, 241, 232, 0.16)";
+        ctx.strokeStyle = stage.trailLine;
         ctx.lineWidth = 3;
 
         for (let i = 0; i < 18; i++) {
@@ -186,6 +362,145 @@
           ctx.lineTo(x + 54, 392);
           ctx.stroke();
         }
+      }
+
+      function drawCityDetails(width, height) {
+        ctx.save();
+
+        ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
+
+        const baseY = 330;
+        const buildingWidths = [55, 80, 45, 70, 60, 95, 50, 75];
+
+        let x = -40 - ((frame * speed * 0.35) % 120);
+
+        for (let i = 0; x < width + 80; i++) {
+          const w = buildingWidths[i % buildingWidths.length];
+          const h = 70 + ((i * 31) % 90);
+
+          ctx.fillRect(x, baseY - h, w, h);
+
+          ctx.fillStyle = "rgba(245, 241, 232, 0.18)";
+
+          for (let wy = baseY - h + 14; wy < baseY - 12; wy += 18) {
+            for (let wx = x + 10; wx < x + w - 8; wx += 18) {
+              ctx.fillRect(wx, wy, 5, 5);
+            }
+          }
+
+          ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
+          x += w + 18;
+        }
+
+        ctx.restore();
+      }
+
+      function drawBackroadDetails(width, height) {
+        ctx.save();
+
+        ctx.strokeStyle = "rgba(201, 216, 166, 0.24)";
+        ctx.lineWidth = 4;
+
+        for (let i = 0; i < 8; i++) {
+          const x = ((i * 170 - frame * speed * 0.8) % (width + 180)) - 90;
+
+          ctx.beginPath();
+          ctx.moveTo(x, 330);
+          ctx.lineTo(x + 20, 285);
+          ctx.lineTo(x + 40, 330);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      function drawPineDetails(width, height) {
+        ctx.save();
+
+        ctx.fillStyle = "rgba(8, 18, 3, 0.45)";
+
+        for (let i = 0; i < 18; i++) {
+          const x = ((i * 85 - frame * speed * 0.65) % (width + 90)) - 45;
+          const treeHeight = 70 + ((i * 17) % 60);
+          const baseY = 360;
+
+          ctx.beginPath();
+          ctx.moveTo(x, baseY - treeHeight);
+          ctx.lineTo(x - 28, baseY);
+          ctx.lineTo(x + 28, baseY);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillRect(x - 4, baseY - 18, 8, 18);
+        }
+
+        ctx.restore();
+      }
+
+      function drawCoastalDetails(width, height) {
+        ctx.save();
+
+        ctx.strokeStyle = "rgba(232, 213, 154, 0.3)";
+        ctx.lineWidth = 3;
+        ctx.lineCap = "round";
+
+        for (let i = 0; i < 28; i++) {
+          const x = ((i * 48 - frame * speed * 0.85) % (width + 60)) - 30;
+          const baseY = 358;
+          const grassHeight = 26 + ((i * 13) % 42);
+
+          ctx.beginPath();
+          ctx.moveTo(x, baseY);
+          ctx.quadraticCurveTo(
+            x + 12,
+            baseY - grassHeight / 2,
+            x + 5,
+            baseY - grassHeight
+          );
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      function drawHomesteadDetails(width, height) {
+        ctx.save();
+
+        const cabinX = width - 250 - ((frame * speed * 0.25) % 40);
+        const cabinY = 285;
+
+        ctx.fillStyle = "rgba(92, 68, 38, 0.82)";
+        roundedRect(cabinX, cabinY, 120, 75, 8);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(45, 31, 20, 0.95)";
+        ctx.beginPath();
+        ctx.moveTo(cabinX - 12, cabinY + 8);
+        ctx.lineTo(cabinX + 60, cabinY - 42);
+        ctx.lineTo(cabinX + 132, cabinY + 8);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(20, 14, 9, 0.8)";
+        ctx.fillRect(cabinX + 50, cabinY + 32, 24, 43);
+
+        ctx.strokeStyle = "rgba(245, 241, 232, 0.28)";
+        ctx.lineWidth = 3;
+
+        for (let i = 0; i < 6; i++) {
+          const x = 40 + i * 34;
+          ctx.beginPath();
+          ctx.moveTo(x, 330);
+          ctx.lineTo(x, 358);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(30, 342);
+        ctx.lineTo(240, 342);
+        ctx.stroke();
+
+        ctx.restore();
       }
 
       function drawMountainRange(parallax, color, baseY, alpha) {
@@ -271,7 +586,13 @@
 
           ctx.fillStyle = "#9b7447";
           ctx.beginPath();
-          ctx.arc(obstacle.x + obstacle.width - 8, obstacle.y + 18, 10, 0, Math.PI * 2);
+          ctx.arc(
+            obstacle.x + obstacle.width - 8,
+            obstacle.y + 18,
+            10,
+            0,
+            Math.PI * 2
+          );
           ctx.fill();
         }
 
@@ -283,6 +604,40 @@
           ctx.fillStyle = "#f5f1e8";
           roundedRect(obstacle.x, obstacle.y + 4, obstacle.width, 18, 5);
           ctx.fill();
+        }
+
+        if (obstacle.type === "grass") {
+          ctx.strokeStyle = "#c9d8a6";
+          ctx.lineWidth = 4;
+          ctx.lineCap = "round";
+
+          for (let i = 0; i < 5; i++) {
+            const bladeX = obstacle.x + i * 8;
+            ctx.beginPath();
+            ctx.moveTo(bladeX, obstacle.y + obstacle.height);
+            ctx.quadraticCurveTo(
+              bladeX + 8,
+              obstacle.y + obstacle.height / 2,
+              bladeX + 2,
+              obstacle.y
+            );
+            ctx.stroke();
+          }
+        }
+
+        if (obstacle.type === "crate") {
+          ctx.fillStyle = "#8b6a3f";
+          roundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 8);
+          ctx.fill();
+
+          ctx.strokeStyle = "rgba(245, 241, 232, 0.35)";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(obstacle.x + 8, obstacle.y + 8);
+          ctx.lineTo(obstacle.x + obstacle.width - 8, obstacle.y + obstacle.height - 8);
+          ctx.moveTo(obstacle.x + obstacle.width - 8, obstacle.y + 8);
+          ctx.lineTo(obstacle.x + 8, obstacle.y + obstacle.height - 8);
+          ctx.stroke();
         }
       }
 
@@ -304,7 +659,7 @@
         score += 1;
         speed += 0.002;
 
-        scoreEl.textContent = Math.floor(score / 5);
+        scoreEl.textContent = getCurrentScore();
 
         player.velocityY += 0.85;
         player.y += player.velocityY;
@@ -315,8 +670,9 @@
           player.grounded = true;
         }
 
-        if (frame % Math.max(55, Math.floor(110 - speed * 4)) === 0) {
+        if (frame >= nextObstacleFrame) {
           spawnObstacle();
+          scheduleNextObstacle();
         }
 
         obstacles.forEach((obstacle) => {
@@ -356,7 +712,7 @@
         gameOver = true;
         running = false;
 
-        const finalScore = Math.floor(score / 5);
+        const finalScore = getCurrentScore();
 
         if (finalScore > best) {
           best = finalScore;
@@ -366,7 +722,7 @@
 
         messageEl.innerHTML = `
           <strong>Trail ended</strong>
-          <span>Score: ${finalScore}. Tap to run again.</span>
+          <span>You made it ${finalScore} steps out. Tap to run again.</span>
         `;
         messageEl.classList.add("show");
       }
@@ -501,12 +857,14 @@
     top: 18px;
     left: 18px;
     right: 18px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    gap: 12px;
     pointer-events: none;
   }
 
-  .hud div {
+  .hud-box {
     border: 1px solid rgba(245, 241, 232, 0.16);
     border-radius: 18px;
     padding: 10px 14px;
@@ -514,7 +872,7 @@
     backdrop-filter: blur(10px);
   }
 
-  .hud span {
+  .hud-box span {
     display: block;
     color: #c9d8a6;
     font-size: 0.72rem;
@@ -523,10 +881,26 @@
     text-transform: uppercase;
   }
 
-  .hud strong {
+  .hud-box strong {
     display: block;
     margin-top: 2px;
     font-size: 1.4rem;
+  }
+
+  .stage-pill {
+    justify-self: center;
+    min-width: 220px;
+    text-align: center;
+  }
+
+  .stage-pill small {
+    display: block;
+    margin-top: 3px;
+    color: #f5f1e8;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
   canvas {
@@ -585,6 +959,26 @@
 
     .game-shell {
       border-radius: 22px;
+    }
+
+    .hud {
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      gap: 8px;
+    }
+
+    .hud-box {
+      padding: 8px 10px;
+      border-radius: 14px;
+    }
+
+    .stage-pill {
+      min-width: 0;
+    }
+
+    .stage-pill small {
+      display: none;
     }
 
     canvas {
