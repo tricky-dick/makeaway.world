@@ -24,8 +24,15 @@
         Notes, essays, research, and guides about using technology, land,
         practical skills, and money to build a freer, more human life.
       </p>
-
+<!-- Article cards -->
       <section class="article-grid">
+        <a class="article-card" href="/articles/what-it-means-to-escape-the-rat-race">
+          <span>Mission</span>
+          <h2>What it means to escape the rat race</h2>
+          <p>
+            Time to get off the wheel
+          </p>
+        </a>
         <a class="article-card" href="/articles/why-im-starting-makeaway">
           <span>Mission</span>
           <h2>Why I’m Starting Makeaway</h2>
@@ -34,6 +41,8 @@
             practical skills to escape the rat race and build a more fulfilling life.
           </p>
         </a>
+        <br></br>
+<!-- Article cards end-->
       </section>
     </main>
   </body>
@@ -100,8 +109,7 @@
 
   .article-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 18px;
+    gap: 20px;
     margin-top: 72px;
   }
 
@@ -109,8 +117,8 @@
   .article-card:visited {
     display: block;
     border: 1px solid rgba(245, 241, 232, 0.18);
-    border-radius: 24px;
-    padding: 26px;
+    border-radius: 28px;
+    padding: 34px;
     color: inherit;
     text-decoration: none;
     background: rgba(255, 255, 255, 0.06);
@@ -130,6 +138,8 @@
   }
 
   .article-card span {
+    display: inline-block;
+    margin-bottom: 18px;
     color: #c9d8a6;
     font-size: 0.78rem;
     font-weight: 900;
@@ -138,14 +148,34 @@
   }
 
   .article-card h2 {
-    margin: 18px 0 12px;
-    font-size: 1.55rem;
-    letter-spacing: -0.04em;
+    margin: 0;
+    max-width: 760px;
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
   }
 
   .article-card p {
-    margin: 0;
+    max-width: 720px;
+    margin: 20px 0 0;
     color: #d5ccb8;
-    line-height: 1.55;
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 760px) {
+    main {
+      padding: 56px 0 80px;
+    }
+
+    .article-card,
+    .article-card:visited {
+      padding: 26px;
+      border-radius: 24px;
+    }
+
+    .article-card h2 {
+      font-size: clamp(2rem, 12vw, 3.3rem);
+    }
   }
 </style>
