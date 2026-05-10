@@ -1,0 +1,272 @@
+---
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Education | Makeaway</title>
+    <meta
+      name="description"
+      content="Useful learning resources, tools, guides, and websites for building skills, becoming more self-sufficient, and creating a freer life."
+    />
+  </head>
+
+  <body>
+    <main>
+      <a class="back-link" href="/">← Back to home</a>
+
+      <p class="eyebrow">Makeaway</p>
+
+      <h1>Education</h1>
+
+      <p class="intro">
+        A collection of useful resources for learning skills, understanding
+        money, building things, using technology better, and becoming more
+        capable over time.
+      </p>
+
+      <!-- Resource cards: add useful external links here -->
+      <section class="resource-grid">
+        <a
+          class="resource-card"
+          href="https://www.khanacademy.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>General Learning</span>
+          <h2>Khan Academy</h2>
+          <p>
+            Free lessons on math, finance, economics, science, and other core
+            topics.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.coursera.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Courses</span>
+          <h2>Coursera</h2>
+          <p>
+            Online courses from universities and companies covering technology,
+            business, data, and more.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.edx.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Courses</span>
+          <h2>edX</h2>
+          <p>
+            University-style online courses for deeper learning in technical and
+            professional subjects.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.freecodecamp.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Technology</span>
+          <h2>freeCodeCamp</h2>
+          <p>
+            Free coding lessons and projects for learning web development,
+            programming, and technical skills.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.investopedia.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Money</span>
+          <h2>Investopedia</h2>
+          <p>
+            Clear explanations of investing, markets, retirement, options,
+            dividends, and financial terms.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.extension.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Homestead</span>
+          <h2>Extension Foundation</h2>
+          <p>
+            Educational resources connected to land-grant universities,
+            agriculture, gardening, and rural knowledge.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.almanac.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Gardening</span>
+          <h2>Old Farmer’s Almanac</h2>
+          <p>
+            Practical gardening, planting, weather, and seasonal living
+            information.
+          </p>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://www.inaturalist.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Outside</span>
+          <h2>iNaturalist</h2>
+          <p>
+            Learn to identify plants, animals, insects, and natural life around
+            you.
+          </p>
+        </a>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    color: #f5f1e8;
+    background: #172117;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(124, 185, 9, 0.22), transparent 35%),
+      linear-gradient(135deg, #111811, #0c2002);
+  }
+
+  main {
+    width: min(980px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 72px 0 96px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 48px;
+    color: #c9d8a6;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .eyebrow {
+    margin: 0 0 14px;
+    color: #c9d8a6;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  .intro {
+    max-width: 760px;
+    margin: 30px 0 0;
+    color: #ded8c8;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.6;
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 72px;
+  }
+
+  .resource-card,
+  .resource-card:visited {
+    display: block;
+    border: 1px solid rgba(245, 241, 232, 0.18);
+    border-radius: 28px;
+    padding: 28px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .resource-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 216, 166, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .resource-card span {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #c9d8a6;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .resource-card h2 {
+    margin: 0;
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .resource-card p {
+    margin: 18px 0 0;
+    color: #d5ccb8;
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 760px) {
+    main {
+      padding: 56px 0 80px;
+    }
+
+    .resource-card,
+    .resource-card:visited {
+      padding: 24px;
+      border-radius: 24px;
+    }
+  }
+</style>
