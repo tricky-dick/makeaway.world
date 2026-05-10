@@ -1,0 +1,151 @@
+---
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Articles | Makeaway</title>
+    <meta
+      name="description"
+      content="Articles from Makeaway about escaping the rat race, building useful skills, land, self-sufficiency, money, and living a more intentional life."
+    />
+  </head>
+
+  <body>
+    <main>
+      <a class="back-link" href="/">← Back to home</a>
+
+      <p class="eyebrow">Makeaway</p>
+
+      <h1>Articles</h1>
+
+      <p class="intro">
+        Notes, essays, research, and guides about using technology, land,
+        practical skills, and money to build a freer, more human life.
+      </p>
+
+      <section class="article-grid">
+        <a class="article-card" href="/articles/why-im-starting-makeaway">
+          <span>Mission</span>
+          <h2>Why I’m Starting Makeaway</h2>
+          <p>
+            The mission behind Makeaway: using technology, land, money, and
+            practical skills to escape the rat race and build a more fulfilling life.
+          </p>
+        </a>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    font-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+    color: #f5f1e8;
+    background: #172117;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(124, 185, 9, 0.22), transparent 35%),
+      linear-gradient(135deg, #111811, #0c2002);
+  }
+
+  main {
+    width: min(980px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 72px 0 96px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 48px;
+    color: #c9d8a6;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .eyebrow {
+    margin: 0 0 14px;
+    color: #c9d8a6;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  .intro {
+    max-width: 760px;
+    margin: 30px 0 0;
+    color: #ded8c8;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.6;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-top: 72px;
+  }
+
+  .article-card,
+  .article-card:visited {
+    display: block;
+    border: 1px solid rgba(245, 241, 232, 0.18);
+    border-radius: 24px;
+    padding: 26px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .article-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 216, 166, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .article-card span {
+    color: #c9d8a6;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .article-card h2 {
+    margin: 18px 0 12px;
+    font-size: 1.55rem;
+    letter-spacing: -0.04em;
+  }
+
+  .article-card p {
+    margin: 0;
+    color: #d5ccb8;
+    line-height: 1.55;
+  }
+</style>
