@@ -1,120 +1,74 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Recipes | Makeaway</title>
-    <meta
-      name="description"
-      content="Simple recipes, camp cooking ideas, homestead meals, and practical food notes from Makeaway."
-    />
-  </head>
+<BaseLayout
+  title="Recipes | Makeaway"
+  description="Simple recipes, camp cooking ideas, homestead meals, and practical food notes from Makeaway."
+>
+  <section class="page-content">
+    <a class="back-link" href="/">← Back to home</a>
 
-  <body>
-    <main>
-      <a class="back-link" href="/">← Back to home</a>
+    <p class="eyebrow">Makeaway / Recipes</p>
 
-      <p class="eyebrow">Makeaway</p>
+    <h1>Recipes</h1>
 
-      <h1>Recipes</h1>
+    <p class="intro">
+      Simple meals, camp cooking, homestead recipes, and practical food ideas
+      for eating well without making life more complicated.
+    </p>
+  </section>
 
-      <p class="intro">
-        Simple meals, camp cooking, homestead recipes, and practical food ideas
-        for eating well without making life more complicated.
+  <section class="recipe-grid">
+    <a class="recipe-card" href="/articles/cast-iron-campfire-breakfast">
+      <span>Camp Cooking</span>
+      <h2>Cast Iron Campfire Breakfast</h2>
+      <p>
+        A simple skillet breakfast idea for camping, camper life, or slow
+        weekend mornings.
       </p>
+    </a>
 
-      <!-- Recipe cards: add each new recipe or cooking resource here -->
-      <section class="recipe-grid">
-        <a class="recipe-card" href="/articles/cast-iron-campfire-breakfast">
-          <span>Camp Cooking</span>
-          <h2>Cast Iron Campfire Breakfast</h2>
-          <p>
-            A simple skillet breakfast idea for camping, camper life, or slow
-            weekend mornings.
-          </p>
-        </a>
+    <a class="recipe-card" href="/articles/basic-homestead-chili">
+      <span>Homestead Meal</span>
+      <h2>Basic Homestead Chili</h2>
+      <p>
+        A hearty, flexible meal that works for meal prep, cold nights, and
+        feeding a group.
+      </p>
+    </a>
 
-        <a class="recipe-card" href="/articles/basic-homestead-chili">
-          <span>Homestead Meal</span>
-          <h2>Basic Homestead Chili</h2>
-          <p>
-            A hearty, flexible meal that works for meal prep, cold nights, and
-            feeding a group.
-          </p>
-        </a>
-
-        <a class="recipe-card" href="/articles/chuck-box-meal-ideas">
-          <span>Camp Setup</span>
-          <h2>Chuck Box Meal Ideas</h2>
-          <p>
-            Easy meals to keep in rotation when cooking from a camper, campsite,
-            or outdoor kitchen box.
-          </p>
-        </a>
-      </section>
-    </main>
-  </body>
-</html>
+    <a class="recipe-card" href="/articles/chuck-box-meal-ideas">
+      <span>Camp Setup</span>
+      <h2>Chuck Box Meal Ideas</h2>
+      <p>
+        Easy meals to keep in rotation when cooking from a camper, campsite,
+        or outdoor kitchen box.
+      </p>
+    </a>
+  </section>
+</BaseLayout>
 
 <style>
-  :root {
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-    color: #f5f1e8;
-    background: #172117;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(124, 185, 9, 0.22), transparent 35%),
-      linear-gradient(135deg, #111811, #0c2002);
-  }
-
-  main {
-    width: min(980px, calc(100% - 40px));
-    margin: 0 auto;
-    padding: 72px 0 96px;
-  }
-
   .back-link {
     display: inline-block;
     margin-bottom: 48px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-weight: 800;
     text-decoration: none;
   }
 
   .back-link:hover {
-    text-decoration: underline;
+    color: var(--text-main);
   }
 
   .eyebrow {
     margin: 0 0 14px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 900;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(3.5rem, 9vw, 7rem);
-    line-height: 0.9;
-    letter-spacing: -0.07em;
-  }
-
-  .intro {
-    max-width: 760px;
-    margin: 30px 0 0;
-    color: #ded8c8;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.6;
   }
 
   .recipe-grid {
@@ -126,13 +80,12 @@
   .recipe-card,
   .recipe-card:visited {
     display: block;
-    border: 1px solid rgba(245, 241, 232, 0.18);
+    border: 1px solid var(--card-border);
     border-radius: 28px;
     padding: 34px;
-    color: inherit;
+    color: var(--text-main);
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
+    background: var(--card);
     transition:
       transform 180ms ease,
       border-color 180ms ease,
@@ -142,15 +95,15 @@
 
   .recipe-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(201, 216, 166, 0.7);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    border-color: rgba(245, 241, 232, 0.45);
+    background: var(--card-hover);
+    box-shadow: 0 18px 45px rgba(255, 255, 255, 0.06);
   }
 
   .recipe-card span {
     display: inline-block;
     margin-bottom: 18px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.78rem;
     font-weight: 900;
     letter-spacing: 0.14em;
@@ -160,6 +113,7 @@
   .recipe-card h2 {
     margin: 0;
     max-width: 760px;
+    color: var(--text-main);
     font-size: clamp(2rem, 5vw, 4rem);
     line-height: 0.95;
     letter-spacing: -0.06em;
@@ -168,14 +122,14 @@
   .recipe-card p {
     max-width: 720px;
     margin: 20px 0 0;
-    color: #d5ccb8;
+    color: var(--text-muted);
     font-size: 1.08rem;
     line-height: 1.65;
   }
 
   @media (max-width: 760px) {
-    main {
-      padding: 56px 0 80px;
+    .recipe-grid {
+      margin-top: 52px;
     }
 
     .recipe-card,
