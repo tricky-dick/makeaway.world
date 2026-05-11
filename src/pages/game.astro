@@ -1,853 +1,804 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Trail Runner | Makeaway</title>
-    <meta
-      name="description"
-      content="A small Makeaway trail runner game. Tap, click, or press space to jump."
-    />
-  </head>
+<BaseLayout
+  title="Trail Runner | Makeaway"
+  description="A small Makeaway trail runner game. Tap, click, or press space to jump."
+>
+  <section class="page-content">
+    <a class="back-link" href="/">← Back to home</a>
 
-  <body>
-    <main>
-      <a class="back-link" href="/">← Back to home</a>
+    <p class="eyebrow">Makeaway / Game</p>
 
-      <section class="hero">
-        <p class="eyebrow">Makeaway Game</p>
-        <h1>Trail Runner</h1>
-        <p class="intro">
-          Escape the rat race. Tap, click, or press <strong>Space</strong> to jump.
-        </p>
-      </section>
+    <h1>Trail Runner</h1>
 
-      <section class="game-shell">
-        <div class="hud">
-          <div class="hud-box">
-            <span>Score</span>
-            <strong id="score">0</strong>
-          </div>
+    <p class="intro">
+      Escape the rat race. Tap, click, or press <strong>Space</strong> to jump.
+    </p>
+  </section>
 
-          <div class="hud-box stage-pill">
-            <span id="stage-name">Rat Race</span>
-            <small id="stage-subtitle">Keep moving.</small>
-          </div>
+  <section class="game-shell">
+    <div class="hud">
+      <div class="hud-box">
+        <span>Score</span>
+        <strong id="score">0</strong>
+      </div>
 
-          <div class="hud-box">
-            <span>Best</span>
-            <strong id="best">0</strong>
-          </div>
-        </div>
+      <div class="hud-box stage-pill">
+        <span id="stage-name">Rat Race</span>
+        <small id="stage-subtitle">Keep moving.</small>
+      </div>
 
-        <canvas id="game" width="1000" height="420"></canvas>
+      <div class="hud-box">
+        <span>Best</span>
+        <strong id="best">0</strong>
+      </div>
+    </div>
 
-        <div class="game-message" id="message">
-          <strong>Tap to start</strong>
-          <span>Jump the obstacles. Keep making a way.</span>
-        </div>
-      </section>
+    <canvas id="game" width="1000" height="420"></canvas>
 
-      <p class="hint">
-        Desktop: Space / click. Phone: tap anywhere on the game.
-      </p>
-    </main>
+    <div class="game-message" id="message">
+      <strong>Tap to start</strong>
+      <span>Jump the obstacles. Keep making a way.</span>
+    </div>
+  </section>
 
-    <script is:inline>
-      const canvas = document.getElementById("game");
-      const ctx = canvas.getContext("2d");
-      const scoreEl = document.getElementById("score");
-      const bestEl = document.getElementById("best");
-      const messageEl = document.getElementById("message");
-      const stageNameEl = document.getElementById("stage-name");
-      const stageSubtitleEl = document.getElementById("stage-subtitle");
+  <p class="hint">
+    Desktop: Space / click. Phone: tap anywhere on the game.
+  </p>
 
-      const DPR = Math.max(1, window.devicePixelRatio || 1);
-      const baseWidth = 1000;
+  <script is:inline>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const bestEl = document.getElementById("best");
+    const messageEl = document.getElementById("message");
+    const stageNameEl = document.getElementById("stage-name");
+    const stageSubtitleEl = document.getElementById("stage-subtitle");
 
-      let running = false;
-      let gameOver = false;
-      let score = 0;
-      let best = Number(localStorage.getItem("makeaway-best-score") || 0);
-      let speed = 6;
-      let frame = 0;
-      let obstacles = [];
-      let particles = [];
-      let nextObstacleFrame = 90;
+    const DPR = Math.max(1, window.devicePixelRatio || 1);
+    const baseWidth = 1000;
 
-      bestEl.textContent = best;
+    let running = false;
+    let gameOver = false;
+    let score = 0;
+    let best = Number(localStorage.getItem("makeaway-best-score") || 0);
+    let speed = 6;
+    let frame = 0;
+    let obstacles = [];
+    let particles = [];
+    let nextObstacleFrame = 90;
 
-      const stages = [
-        {
-          minScore: 0,
-          name: "Rat Race",
-          subtitle: "Keep moving.",
-          skyTop: "#252832",
-          skyBottom: "#111318",
-          ground: "#171a1f",
-          mountainBack: "#303540",
-          mountainMid: "#262b34",
-          sun: "rgba(245, 241, 232, 0.35)",
-          trailLine: "rgba(245, 241, 232, 0.12)",
-        },
-        {
-          minScore: 100,
-          name: "Backroad",
-          subtitle: "Out of the noise.",
-          skyTop: "#36414b",
-          skyBottom: "#202818",
-          ground: "#1a2412",
-          mountainBack: "#3a4a31",
-          mountainMid: "#26371f",
-          sun: "rgba(217, 201, 142, 0.62)",
-          trailLine: "rgba(245, 241, 232, 0.16)",
-        },
-        {
-          minScore: 250,
-          name: "Pine Woods",
-          subtitle: "Less noise. More signal.",
-          skyTop: "#2b4a3a",
-          skyBottom: "#13210f",
-          ground: "#172117",
-          mountainBack: "#304822",
-          mountainMid: "#1d321b",
-          sun: "rgba(201, 216, 166, 0.72)",
-          trailLine: "rgba(245, 241, 232, 0.18)",
-        },
-        {
-          minScore: 500,
-          name: "Coastal Trail",
-          subtitle: "Sand, scrub, and open air.",
-          skyTop: "#547f91",
-          skyBottom: "#233b2a",
-          ground: "#1a2112",
-          mountainBack: "#5c6f46",
-          mountainMid: "#314522",
-          sun: "rgba(232, 213, 154, 0.78)",
-          trailLine: "rgba(245, 241, 232, 0.22)",
-        },
-        {
-          minScore: 800,
-          name: "Homestead",
-          subtitle: "Build the life.",
-          skyTop: "#5f7f52",
-          skyBottom: "#172117",
-          ground: "#172117",
-          mountainBack: "#526b3a",
-          mountainMid: "#263f22",
-          sun: "rgba(232, 213, 154, 0.88)",
-          trailLine: "rgba(245, 241, 232, 0.24)",
-        },
+    bestEl.textContent = best;
+
+    const stages = [
+      {
+        minScore: 0,
+        name: "Rat Race",
+        subtitle: "Keep moving.",
+        skyTop: "#252832",
+        skyBottom: "#111318",
+        ground: "#171a1f",
+        mountainBack: "#303540",
+        mountainMid: "#262b34",
+        sun: "rgba(245, 241, 232, 0.35)",
+        trailLine: "rgba(245, 241, 232, 0.12)",
+      },
+      {
+        minScore: 100,
+        name: "Backroad",
+        subtitle: "Out of the noise.",
+        skyTop: "#36414b",
+        skyBottom: "#202818",
+        ground: "#1a2412",
+        mountainBack: "#3a4a31",
+        mountainMid: "#26371f",
+        sun: "rgba(217, 201, 142, 0.62)",
+        trailLine: "rgba(245, 241, 232, 0.16)",
+      },
+      {
+        minScore: 250,
+        name: "Pine Woods",
+        subtitle: "Less noise. More signal.",
+        skyTop: "#2b4a3a",
+        skyBottom: "#13210f",
+        ground: "#172117",
+        mountainBack: "#304822",
+        mountainMid: "#1d321b",
+        sun: "rgba(201, 216, 166, 0.72)",
+        trailLine: "rgba(245, 241, 232, 0.18)",
+      },
+      {
+        minScore: 500,
+        name: "Coastal Trail",
+        subtitle: "Sand, scrub, and open air.",
+        skyTop: "#547f91",
+        skyBottom: "#233b2a",
+        ground: "#1a2112",
+        mountainBack: "#5c6f46",
+        mountainMid: "#314522",
+        sun: "rgba(232, 213, 154, 0.78)",
+        trailLine: "rgba(245, 241, 232, 0.22)",
+      },
+      {
+        minScore: 800,
+        name: "Homestead",
+        subtitle: "Build the life.",
+        skyTop: "#5f7f52",
+        skyBottom: "#172117",
+        ground: "#172117",
+        mountainBack: "#526b3a",
+        mountainMid: "#263f22",
+        sun: "rgba(232, 213, 154, 0.88)",
+        trailLine: "rgba(245, 241, 232, 0.24)",
+      },
+    ];
+
+    const player = {
+      x: 130,
+      y: 295,
+      width: 48,
+      height: 64,
+      velocityY: 0,
+      grounded: true,
+    };
+
+    function getCurrentScore() {
+      return Math.floor(score / 5);
+    }
+
+    function getCurrentStage() {
+      const currentScore = getCurrentScore();
+      let currentStage = stages[0];
+
+      for (const stage of stages) {
+        if (currentScore >= stage.minScore) {
+          currentStage = stage;
+        }
+      }
+
+      return currentStage;
+    }
+
+    function randomBetween(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function scheduleNextObstacle() {
+      const currentScore = getCurrentScore();
+
+      let minGap = 70;
+      let maxGap = 130;
+
+      if (currentScore > 250) {
+        minGap = 58;
+        maxGap = 115;
+      }
+
+      if (currentScore > 500) {
+        minGap = 48;
+        maxGap = 100;
+      }
+
+      if (currentScore > 800) {
+        minGap = 42;
+        maxGap = 90;
+      }
+
+      nextObstacleFrame = frame + randomBetween(minGap, maxGap);
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * DPR;
+      canvas.height = rect.height * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+
+    function resetGame() {
+      running = true;
+      gameOver = false;
+      score = 0;
+      speed = 6;
+      frame = 0;
+      obstacles = [];
+      particles = [];
+      nextObstacleFrame = 90;
+
+      player.y = 295;
+      player.velocityY = 0;
+      player.grounded = true;
+
+      messageEl.classList.remove("show");
+    }
+
+    function jump() {
+      if (!running || gameOver) {
+        resetGame();
+        return;
+      }
+
+      if (player.grounded) {
+        player.velocityY = -17;
+        player.grounded = false;
+        createDust(player.x + 15, player.y + player.height);
+      }
+    }
+
+    function createDust(x, y) {
+      for (let i = 0; i < 10; i++) {
+        particles.push({
+          x,
+          y,
+          size: Math.random() * 4 + 2,
+          vx: Math.random() * -3 - 1,
+          vy: Math.random() * -2,
+          life: 28,
+        });
+      }
+    }
+
+    function spawnObstacle() {
+      const stage = getCurrentStage();
+
+      let types = [
+        { type: "rock", width: 42, height: 38 },
+        { type: "log", width: 62, height: 30 },
+        { type: "marker", width: 28, height: 58 },
       ];
 
-      const player = {
-        x: 130,
-        y: 295,
-        width: 48,
-        height: 64,
-        velocityY: 0,
-        grounded: true,
-      };
-
-      function getCurrentScore() {
-        return Math.floor(score / 5);
+      if (stage.name === "Rat Race") {
+        types = [
+          { type: "marker", width: 28, height: 58 },
+          { type: "log", width: 64, height: 30 },
+          { type: "rock", width: 44, height: 40 },
+        ];
       }
 
-      function getCurrentStage() {
-        const currentScore = getCurrentScore();
-        let currentStage = stages[0];
-
-        for (const stage of stages) {
-          if (currentScore >= stage.minScore) {
-            currentStage = stage;
-          }
-        }
-
-        return currentStage;
+      if (stage.name === "Coastal Trail") {
+        types = [
+          { type: "grass", width: 34, height: 54 },
+          { type: "rock", width: 42, height: 36 },
+          { type: "log", width: 68, height: 28 },
+        ];
       }
 
-      function randomBetween(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-
-      function scheduleNextObstacle() {
-        const currentScore = getCurrentScore();
-
-        let minGap = 70;
-        let maxGap = 130;
-
-        if (currentScore > 250) {
-          minGap = 58;
-          maxGap = 115;
-        }
-
-        if (currentScore > 500) {
-          minGap = 48;
-          maxGap = 100;
-        }
-
-        if (currentScore > 800) {
-          minGap = 42;
-          maxGap = 90;
-        }
-
-        nextObstacleFrame = frame + randomBetween(minGap, maxGap);
-      }
-
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * DPR;
-        canvas.height = rect.height * DPR;
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      }
-
-      function resetGame() {
-        running = true;
-        gameOver = false;
-        score = 0;
-        speed = 6;
-        frame = 0;
-        obstacles = [];
-        particles = [];
-        nextObstacleFrame = 90;
-
-        player.y = 295;
-        player.velocityY = 0;
-        player.grounded = true;
-
-        messageEl.classList.remove("show");
-      }
-
-      function jump() {
-        if (!running || gameOver) {
-          resetGame();
-          return;
-        }
-
-        if (player.grounded) {
-          player.velocityY = -17;
-          player.grounded = false;
-          createDust(player.x + 15, player.y + player.height);
-        }
-      }
-
-      function createDust(x, y) {
-        for (let i = 0; i < 10; i++) {
-          particles.push({
-            x,
-            y,
-            size: Math.random() * 4 + 2,
-            vx: Math.random() * -3 - 1,
-            vy: Math.random() * -2,
-            life: 28,
-          });
-        }
-      }
-
-      function spawnObstacle() {
-        const stage = getCurrentStage();
-
-        let types = [
-          { type: "rock", width: 42, height: 38 },
-          { type: "log", width: 62, height: 30 },
+      if (stage.name === "Homestead") {
+        types = [
+          { type: "crate", width: 46, height: 42 },
+          { type: "log", width: 68, height: 28 },
           { type: "marker", width: 28, height: 58 },
         ];
+      }
 
-        if (stage.name === "Rat Race") {
-          types = [
-            { type: "marker", width: 28, height: 58 },
-            { type: "log", width: 64, height: 30 },
-            { type: "rock", width: 44, height: 40 },
-          ];
-        }
+      const pick = types[Math.floor(Math.random() * types.length)];
 
-        if (stage.name === "Coastal Trail") {
-          types = [
-            { type: "grass", width: 34, height: 54 },
-            { type: "rock", width: 42, height: 36 },
-            { type: "log", width: 68, height: 28 },
-          ];
-        }
+      obstacles.push({
+        ...pick,
+        x: baseWidth + randomBetween(30, 90),
+        y: 360 - pick.height,
+      });
 
-        if (stage.name === "Homestead") {
-          types = [
-            { type: "crate", width: 46, height: 42 },
-            { type: "log", width: 68, height: 28 },
-            { type: "marker", width: 28, height: 58 },
-          ];
-        }
-
-        const pick = types[Math.floor(Math.random() * types.length)];
+      if (getCurrentScore() > 450 && Math.random() < 0.18) {
+        const secondPick = types[Math.floor(Math.random() * types.length)];
 
         obstacles.push({
-          ...pick,
-          x: baseWidth + randomBetween(30, 90),
-          y: 360 - pick.height,
+          ...secondPick,
+          x: baseWidth + randomBetween(150, 240),
+          y: 360 - secondPick.height,
         });
+      }
+    }
 
-        if (getCurrentScore() > 450 && Math.random() < 0.18) {
-          const secondPick = types[Math.floor(Math.random() * types.length)];
+    function drawBackground() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const stage = getCurrentStage();
 
-          obstacles.push({
-            ...secondPick,
-            x: baseWidth + randomBetween(150, 240),
-            y: 360 - secondPick.height,
-          });
-        }
+      stageNameEl.textContent = stage.name;
+      stageSubtitleEl.textContent = stage.subtitle;
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, stage.skyTop);
+      gradient.addColorStop(0.62, stage.skyBottom);
+      gradient.addColorStop(1, "#081203");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.beginPath();
+      ctx.arc(width - 125, 85, 46, 0, Math.PI * 2);
+      ctx.fillStyle = stage.sun;
+      ctx.fill();
+
+      if (stage.name === "Rat Race") {
+        drawCityDetails(width, height);
+      } else {
+        drawMountainRange(0.18, stage.mountainBack, 185, 0.18);
+        drawMountainRange(0.35, stage.mountainMid, 230, 0.32);
       }
 
-      function drawBackground() {
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        const stage = getCurrentStage();
+      if (stage.name === "Backroad") {
+        drawBackroadDetails(width, height);
+      }
 
-        stageNameEl.textContent = stage.name;
-        stageSubtitleEl.textContent = stage.subtitle;
+      if (stage.name === "Pine Woods") {
+        drawPineDetails(width, height);
+      }
 
-        const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, stage.skyTop);
-        gradient.addColorStop(0.62, stage.skyBottom);
-        gradient.addColorStop(1, "#081203");
+      if (stage.name === "Coastal Trail") {
+        drawCoastalDetails(width, height);
+      }
 
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, width, height);
+      if (stage.name === "Homestead") {
+        drawHomesteadDetails(width, height);
+      }
 
+      ctx.fillStyle = stage.ground;
+      ctx.fillRect(0, 360, width, height - 360);
+
+      ctx.strokeStyle = "rgba(201, 216, 166, 0.35)";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, 360);
+      ctx.lineTo(width, 360);
+      ctx.stroke();
+
+      ctx.strokeStyle = stage.trailLine;
+      ctx.lineWidth = 3;
+
+      for (let i = 0; i < 18; i++) {
+        const x = ((i * 110 - frame * speed * 1.5) % (width + 120)) - 80;
         ctx.beginPath();
-        ctx.arc(width - 125, 85, 46, 0, Math.PI * 2);
-        ctx.fillStyle = stage.sun;
-        ctx.fill();
-
-        if (stage.name === "Rat Race") {
-          drawCityDetails(width, height);
-        } else {
-          drawMountainRange(0.18, stage.mountainBack, 185, 0.18);
-          drawMountainRange(0.35, stage.mountainMid, 230, 0.32);
-        }
-
-        if (stage.name === "Backroad") {
-          drawBackroadDetails(width, height);
-        }
-
-        if (stage.name === "Pine Woods") {
-          drawPineDetails(width, height);
-        }
-
-        if (stage.name === "Coastal Trail") {
-          drawCoastalDetails(width, height);
-        }
-
-        if (stage.name === "Homestead") {
-          drawHomesteadDetails(width, height);
-        }
-
-        ctx.fillStyle = stage.ground;
-        ctx.fillRect(0, 360, width, height - 360);
-
-        ctx.strokeStyle = "rgba(201, 216, 166, 0.35)";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, 360);
-        ctx.lineTo(width, 360);
+        ctx.moveTo(x, 392);
+        ctx.lineTo(x + 54, 392);
         ctx.stroke();
-
-        ctx.strokeStyle = stage.trailLine;
-        ctx.lineWidth = 3;
-
-        for (let i = 0; i < 18; i++) {
-          const x = ((i * 110 - frame * speed * 1.5) % (width + 120)) - 80;
-          ctx.beginPath();
-          ctx.moveTo(x, 392);
-          ctx.lineTo(x + 54, 392);
-          ctx.stroke();
-        }
       }
+    }
 
-      function drawCityDetails(width, height) {
-        ctx.save();
+    function drawCityDetails(width, height) {
+      ctx.save();
+
+      ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
+
+      const baseY = 330;
+      const buildingWidths = [55, 80, 45, 70, 60, 95, 50, 75];
+
+      let x = -40 - ((frame * speed * 0.35) % 120);
+
+      for (let i = 0; x < width + 80; i++) {
+        const w = buildingWidths[i % buildingWidths.length];
+        const h = 70 + ((i * 31) % 90);
+
+        ctx.fillRect(x, baseY - h, w, h);
+
+        ctx.fillStyle = "rgba(245, 241, 232, 0.18)";
+
+        for (let wy = baseY - h + 14; wy < baseY - 12; wy += 18) {
+          for (let wx = x + 10; wx < x + w - 8; wx += 18) {
+            ctx.fillRect(wx, wy, 5, 5);
+          }
+        }
 
         ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
-
-        const baseY = 330;
-        const buildingWidths = [55, 80, 45, 70, 60, 95, 50, 75];
-
-        let x = -40 - ((frame * speed * 0.35) % 120);
-
-        for (let i = 0; x < width + 80; i++) {
-          const w = buildingWidths[i % buildingWidths.length];
-          const h = 70 + ((i * 31) % 90);
-
-          ctx.fillRect(x, baseY - h, w, h);
-
-          ctx.fillStyle = "rgba(245, 241, 232, 0.18)";
-
-          for (let wy = baseY - h + 14; wy < baseY - 12; wy += 18) {
-            for (let wx = x + 10; wx < x + w - 8; wx += 18) {
-              ctx.fillRect(wx, wy, 5, 5);
-            }
-          }
-
-          ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
-          x += w + 18;
-        }
-
-        ctx.restore();
+        x += w + 18;
       }
 
-      function drawBackroadDetails(width, height) {
-        ctx.save();
+      ctx.restore();
+    }
 
-        ctx.strokeStyle = "rgba(201, 216, 166, 0.24)";
-        ctx.lineWidth = 4;
+    function drawBackroadDetails(width, height) {
+      ctx.save();
 
-        for (let i = 0; i < 8; i++) {
-          const x = ((i * 170 - frame * speed * 0.8) % (width + 180)) - 90;
+      ctx.strokeStyle = "rgba(201, 216, 166, 0.24)";
+      ctx.lineWidth = 4;
 
-          ctx.beginPath();
-          ctx.moveTo(x, 330);
-          ctx.lineTo(x + 20, 285);
-          ctx.lineTo(x + 40, 330);
-          ctx.stroke();
-        }
+      for (let i = 0; i < 8; i++) {
+        const x = ((i * 170 - frame * speed * 0.8) % (width + 180)) - 90;
 
-        ctx.restore();
-      }
-
-      function drawPineDetails(width, height) {
-        ctx.save();
-
-        ctx.fillStyle = "rgba(8, 18, 3, 0.45)";
-
-        for (let i = 0; i < 18; i++) {
-          const x = ((i * 85 - frame * speed * 0.65) % (width + 90)) - 45;
-          const treeHeight = 70 + ((i * 17) % 60);
-          const baseY = 360;
-
-          ctx.beginPath();
-          ctx.moveTo(x, baseY - treeHeight);
-          ctx.lineTo(x - 28, baseY);
-          ctx.lineTo(x + 28, baseY);
-          ctx.closePath();
-          ctx.fill();
-
-          ctx.fillRect(x - 4, baseY - 18, 8, 18);
-        }
-
-        ctx.restore();
-      }
-
-      function drawCoastalDetails(width, height) {
-        ctx.save();
-
-        ctx.strokeStyle = "rgba(232, 213, 154, 0.3)";
-        ctx.lineWidth = 3;
-        ctx.lineCap = "round";
-
-        for (let i = 0; i < 28; i++) {
-          const x = ((i * 48 - frame * speed * 0.85) % (width + 60)) - 30;
-          const baseY = 358;
-          const grassHeight = 26 + ((i * 13) % 42);
-
-          ctx.beginPath();
-          ctx.moveTo(x, baseY);
-          ctx.quadraticCurveTo(
-            x + 12,
-            baseY - grassHeight / 2,
-            x + 5,
-            baseY - grassHeight
-          );
-          ctx.stroke();
-        }
-
-        ctx.restore();
-      }
-
-      function drawHomesteadDetails(width, height) {
-        ctx.save();
-
-        const cabinX = width - 250 - ((frame * speed * 0.25) % 40);
-        const cabinY = 285;
-
-        ctx.fillStyle = "rgba(92, 68, 38, 0.82)";
-        roundedRect(cabinX, cabinY, 120, 75, 8);
-        ctx.fill();
-
-        ctx.fillStyle = "rgba(45, 31, 20, 0.95)";
         ctx.beginPath();
-        ctx.moveTo(cabinX - 12, cabinY + 8);
-        ctx.lineTo(cabinX + 60, cabinY - 42);
-        ctx.lineTo(cabinX + 132, cabinY + 8);
+        ctx.moveTo(x, 330);
+        ctx.lineTo(x + 20, 285);
+        ctx.lineTo(x + 40, 330);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawPineDetails(width, height) {
+      ctx.save();
+
+      ctx.fillStyle = "rgba(8, 18, 3, 0.45)";
+
+      for (let i = 0; i < 18; i++) {
+        const x = ((i * 85 - frame * speed * 0.65) % (width + 90)) - 45;
+        const treeHeight = 70 + ((i * 17) % 60);
+        const baseY = 360;
+
+        ctx.beginPath();
+        ctx.moveTo(x, baseY - treeHeight);
+        ctx.lineTo(x - 28, baseY);
+        ctx.lineTo(x + 28, baseY);
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = "rgba(20, 14, 9, 0.8)";
-        ctx.fillRect(cabinX + 50, cabinY + 32, 24, 43);
+        ctx.fillRect(x - 4, baseY - 18, 8, 18);
+      }
 
-        ctx.strokeStyle = "rgba(245, 241, 232, 0.28)";
-        ctx.lineWidth = 3;
+      ctx.restore();
+    }
 
-        for (let i = 0; i < 6; i++) {
-          const x = 40 + i * 34;
-          ctx.beginPath();
-          ctx.moveTo(x, 330);
-          ctx.lineTo(x, 358);
-          ctx.stroke();
-        }
+    function drawCoastalDetails(width, height) {
+      ctx.save();
+
+      ctx.strokeStyle = "rgba(232, 213, 154, 0.3)";
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+
+      for (let i = 0; i < 28; i++) {
+        const x = ((i * 48 - frame * speed * 0.85) % (width + 60)) - 30;
+        const baseY = 358;
+        const grassHeight = 26 + ((i * 13) % 42);
 
         ctx.beginPath();
-        ctx.moveTo(30, 342);
-        ctx.lineTo(240, 342);
+        ctx.moveTo(x, baseY);
+        ctx.quadraticCurveTo(
+          x + 12,
+          baseY - grassHeight / 2,
+          x + 5,
+          baseY - grassHeight
+        );
         ctx.stroke();
-
-        ctx.restore();
       }
 
-      function drawMountainRange(parallax, color, baseY, alpha) {
-        const width = canvas.clientWidth;
-        const offset = (frame * speed * parallax) % width;
+      ctx.restore();
+    }
 
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = color;
+    function drawHomesteadDetails(width, height) {
+      ctx.save();
 
-        for (let start = -width; start < width * 2; start += width) {
-          ctx.beginPath();
-          ctx.moveTo(start - offset, baseY);
+      const cabinX = width - 250 - ((frame * speed * 0.25) % 40);
+      const cabinY = 285;
 
-          ctx.lineTo(start + 120 - offset, baseY - 80);
-          ctx.lineTo(start + 250 - offset, baseY);
-          ctx.lineTo(start + 410 - offset, baseY - 125);
-          ctx.lineTo(start + 610 - offset, baseY);
-          ctx.lineTo(start + 780 - offset, baseY - 95);
-          ctx.lineTo(start + 1000 - offset, baseY);
+      ctx.fillStyle = "rgba(92, 68, 38, 0.82)";
+      roundedRect(cabinX, cabinY, 120, 75, 8);
+      ctx.fill();
 
-          ctx.lineTo(start + width - offset, baseY + 200);
-          ctx.lineTo(start - offset, baseY + 200);
-          ctx.closePath();
-          ctx.fill();
-        }
+      ctx.fillStyle = "rgba(45, 31, 20, 0.95)";
+      ctx.beginPath();
+      ctx.moveTo(cabinX - 12, cabinY + 8);
+      ctx.lineTo(cabinX + 60, cabinY - 42);
+      ctx.lineTo(cabinX + 132, cabinY + 8);
+      ctx.closePath();
+      ctx.fill();
 
-        ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(20, 14, 9, 0.8)";
+      ctx.fillRect(cabinX + 50, cabinY + 32, 24, 43);
+
+      ctx.strokeStyle = "rgba(245, 241, 232, 0.28)";
+      ctx.lineWidth = 3;
+
+      for (let i = 0; i < 6; i++) {
+        const x = 40 + i * 34;
+        ctx.beginPath();
+        ctx.moveTo(x, 330);
+        ctx.lineTo(x, 358);
+        ctx.stroke();
       }
 
-      function drawPlayer() {
-        const x = player.x;
-        const y = player.y;
+      ctx.beginPath();
+      ctx.moveTo(30, 342);
+      ctx.lineTo(240, 342);
+      ctx.stroke();
 
-        ctx.fillStyle = "#c9d8a6";
-        roundedRect(x, y + 12, player.width, player.height - 12, 14);
+      ctx.restore();
+    }
+
+    function drawMountainRange(parallax, color, baseY, alpha) {
+      const width = canvas.clientWidth;
+      const offset = (frame * speed * parallax) % width;
+
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = color;
+
+      for (let start = -width; start < width * 2; start += width) {
+        ctx.beginPath();
+        ctx.moveTo(start - offset, baseY);
+
+        ctx.lineTo(start + 120 - offset, baseY - 80);
+        ctx.lineTo(start + 250 - offset, baseY);
+        ctx.lineTo(start + 410 - offset, baseY - 125);
+        ctx.lineTo(start + 610 - offset, baseY);
+        ctx.lineTo(start + 780 - offset, baseY - 95);
+        ctx.lineTo(start + 1000 - offset, baseY);
+
+        ctx.lineTo(start + width - offset, baseY + 200);
+        ctx.lineTo(start - offset, baseY + 200);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+    }
+
+    function drawPlayer() {
+      const x = player.x;
+      const y = player.y;
+
+      ctx.fillStyle = "#c9d8a6";
+      roundedRect(x, y + 12, player.width, player.height - 12, 14);
+      ctx.fill();
+
+      ctx.fillStyle = "#6d7f45";
+      roundedRect(x - 13, y + 25, 18, 32, 8);
+      ctx.fill();
+
+      ctx.fillStyle = "#f5f1e8";
+      ctx.beginPath();
+      ctx.arc(x + 26, y + 10, 17, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#172117";
+      ctx.fillRect(x + 8, y - 3, 36, 8);
+      ctx.fillRect(x + 15, y - 12, 22, 12);
+
+      const step = Math.sin(frame * 0.25) * 8;
+      ctx.strokeStyle = "#f5f1e8";
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+
+      ctx.beginPath();
+      ctx.moveTo(x + 18, y + player.height - 8);
+      ctx.lineTo(x + 10 + step, y + player.height + 12);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(x + 34, y + player.height - 8);
+      ctx.lineTo(x + 42 - step, y + player.height + 12);
+      ctx.stroke();
+    }
+
+    function drawObstacle(obstacle) {
+      if (obstacle.type === "rock") {
+        ctx.fillStyle = "#7d8068";
+        ctx.beginPath();
+        ctx.moveTo(obstacle.x, obstacle.y + obstacle.height);
+        ctx.lineTo(obstacle.x + 12, obstacle.y + 6);
+        ctx.lineTo(obstacle.x + 34, obstacle.y);
+        ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      if (obstacle.type === "log") {
+        ctx.fillStyle = "#6f4c2d";
+        roundedRect(obstacle.x, obstacle.y + 8, obstacle.width, 20, 10);
         ctx.fill();
 
-        ctx.fillStyle = "#6d7f45";
-        roundedRect(x - 13, y + 25, 18, 32, 8);
+        ctx.fillStyle = "#9b7447";
+        ctx.beginPath();
+        ctx.arc(
+          obstacle.x + obstacle.width - 8,
+          obstacle.y + 18,
+          10,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+
+      if (obstacle.type === "marker") {
+        ctx.fillStyle = "#c9d8a6";
+        roundedRect(obstacle.x + 9, obstacle.y, 10, obstacle.height, 4);
         ctx.fill();
 
         ctx.fillStyle = "#f5f1e8";
-        ctx.beginPath();
-        ctx.arc(x + 26, y + 10, 17, 0, Math.PI * 2);
+        roundedRect(obstacle.x, obstacle.y + 4, obstacle.width, 18, 5);
         ctx.fill();
-
-        ctx.fillStyle = "#172117";
-        ctx.fillRect(x + 8, y - 3, 36, 8);
-        ctx.fillRect(x + 15, y - 12, 22, 12);
-
-        const step = Math.sin(frame * 0.25) * 8;
-        ctx.strokeStyle = "#f5f1e8";
-        ctx.lineWidth = 6;
-        ctx.lineCap = "round";
-
-        ctx.beginPath();
-        ctx.moveTo(x + 18, y + player.height - 8);
-        ctx.lineTo(x + 10 + step, y + player.height + 12);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x + 34, y + player.height - 8);
-        ctx.lineTo(x + 42 - step, y + player.height + 12);
-        ctx.stroke();
       }
 
-      function drawObstacle(obstacle) {
-        if (obstacle.type === "rock") {
-          ctx.fillStyle = "#7d8068";
-          ctx.beginPath();
-          ctx.moveTo(obstacle.x, obstacle.y + obstacle.height);
-          ctx.lineTo(obstacle.x + 12, obstacle.y + 6);
-          ctx.lineTo(obstacle.x + 34, obstacle.y);
-          ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
-          ctx.closePath();
-          ctx.fill();
-        }
+      if (obstacle.type === "grass") {
+        ctx.strokeStyle = "#c9d8a6";
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
 
-        if (obstacle.type === "log") {
-          ctx.fillStyle = "#6f4c2d";
-          roundedRect(obstacle.x, obstacle.y + 8, obstacle.width, 20, 10);
-          ctx.fill();
-
-          ctx.fillStyle = "#9b7447";
+        for (let i = 0; i < 5; i++) {
+          const bladeX = obstacle.x + i * 8;
           ctx.beginPath();
-          ctx.arc(
-            obstacle.x + obstacle.width - 8,
-            obstacle.y + 18,
-            10,
-            0,
-            Math.PI * 2
+          ctx.moveTo(bladeX, obstacle.y + obstacle.height);
+          ctx.quadraticCurveTo(
+            bladeX + 8,
+            obstacle.y + obstacle.height / 2,
+            bladeX + 2,
+            obstacle.y
           );
-          ctx.fill();
-        }
-
-        if (obstacle.type === "marker") {
-          ctx.fillStyle = "#c9d8a6";
-          roundedRect(obstacle.x + 9, obstacle.y, 10, obstacle.height, 4);
-          ctx.fill();
-
-          ctx.fillStyle = "#f5f1e8";
-          roundedRect(obstacle.x, obstacle.y + 4, obstacle.width, 18, 5);
-          ctx.fill();
-        }
-
-        if (obstacle.type === "grass") {
-          ctx.strokeStyle = "#c9d8a6";
-          ctx.lineWidth = 4;
-          ctx.lineCap = "round";
-
-          for (let i = 0; i < 5; i++) {
-            const bladeX = obstacle.x + i * 8;
-            ctx.beginPath();
-            ctx.moveTo(bladeX, obstacle.y + obstacle.height);
-            ctx.quadraticCurveTo(
-              bladeX + 8,
-              obstacle.y + obstacle.height / 2,
-              bladeX + 2,
-              obstacle.y
-            );
-            ctx.stroke();
-          }
-        }
-
-        if (obstacle.type === "crate") {
-          ctx.fillStyle = "#8b6a3f";
-          roundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 8);
-          ctx.fill();
-
-          ctx.strokeStyle = "rgba(245, 241, 232, 0.35)";
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(obstacle.x + 8, obstacle.y + 8);
-          ctx.lineTo(obstacle.x + obstacle.width - 8, obstacle.y + obstacle.height - 8);
-          ctx.moveTo(obstacle.x + obstacle.width - 8, obstacle.y + 8);
-          ctx.lineTo(obstacle.x + 8, obstacle.y + obstacle.height - 8);
           ctx.stroke();
         }
       }
 
-      function drawParticles() {
-        particles.forEach((p) => {
-          ctx.globalAlpha = Math.max(p.life / 28, 0);
-          ctx.fillStyle = "#c9d8a6";
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        });
+      if (obstacle.type === "crate") {
+        ctx.fillStyle = "#8b6a3f";
+        roundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 8);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(245, 241, 232, 0.35)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(obstacle.x + 8, obstacle.y + 8);
+        ctx.lineTo(obstacle.x + obstacle.width - 8, obstacle.y + obstacle.height - 8);
+        ctx.moveTo(obstacle.x + obstacle.width - 8, obstacle.y + 8);
+        ctx.lineTo(obstacle.x + 8, obstacle.y + obstacle.height - 8);
+        ctx.stroke();
+      }
+    }
+
+    function drawParticles() {
+      particles.forEach((p) => {
+        ctx.globalAlpha = Math.max(p.life / 28, 0);
+        ctx.fillStyle = "#c9d8a6";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    }
+
+    function update() {
+      if (!running || gameOver) return;
+
+      frame++;
+      score += 1;
+      speed += 0.002;
+
+      scoreEl.textContent = getCurrentScore();
+
+      player.velocityY += 0.85;
+      player.y += player.velocityY;
+
+      if (player.y >= 295) {
+        player.y = 295;
+        player.velocityY = 0;
+        player.grounded = true;
       }
 
-      function update() {
-        if (!running || gameOver) return;
-
-        frame++;
-        score += 1;
-        speed += 0.002;
-
-        scoreEl.textContent = getCurrentScore();
-
-        player.velocityY += 0.85;
-        player.y += player.velocityY;
-
-        if (player.y >= 295) {
-          player.y = 295;
-          player.velocityY = 0;
-          player.grounded = true;
-        }
-
-        if (frame >= nextObstacleFrame) {
-          spawnObstacle();
-          scheduleNextObstacle();
-        }
-
-        obstacles.forEach((obstacle) => {
-          obstacle.x -= speed;
-        });
-
-        obstacles = obstacles.filter((obstacle) => obstacle.x + obstacle.width > -50);
-
-        particles.forEach((p) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life -= 1;
-        });
-
-        particles = particles.filter((p) => p.life > 0);
-
-        checkCollision();
+      if (frame >= nextObstacleFrame) {
+        spawnObstacle();
+        scheduleNextObstacle();
       }
 
-      function checkCollision() {
-        for (const obstacle of obstacles) {
-          const padding = 10;
+      obstacles.forEach((obstacle) => {
+        obstacle.x -= speed;
+      });
 
-          const hit =
-            player.x + padding < obstacle.x + obstacle.width &&
-            player.x + player.width - padding > obstacle.x &&
-            player.y + padding < obstacle.y + obstacle.height &&
-            player.y + player.height - padding > obstacle.y;
+      obstacles = obstacles.filter((obstacle) => obstacle.x + obstacle.width > -50);
 
-          if (hit) {
-            endGame();
-          }
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1;
+      });
+
+      particles = particles.filter((p) => p.life > 0);
+
+      checkCollision();
+    }
+
+    function checkCollision() {
+      for (const obstacle of obstacles) {
+        const padding = 10;
+
+        const hit =
+          player.x + padding < obstacle.x + obstacle.width &&
+          player.x + player.width - padding > obstacle.x &&
+          player.y + padding < obstacle.y + obstacle.height &&
+          player.y + player.height - padding > obstacle.y;
+
+        if (hit) {
+          endGame();
         }
       }
+    }
 
-      function endGame() {
-        gameOver = true;
-        running = false;
+    function endGame() {
+      gameOver = true;
+      running = false;
 
-        const finalScore = getCurrentScore();
+      const finalScore = getCurrentScore();
 
-        if (finalScore > best) {
-          best = finalScore;
-          localStorage.setItem("makeaway-best-score", best);
-          bestEl.textContent = best;
-        }
+      if (finalScore > best) {
+        best = finalScore;
+        localStorage.setItem("makeaway-best-score", best);
+        bestEl.textContent = best;
+      }
 
-        messageEl.innerHTML = `
-          <strong>Trail ended</strong>
-          <span>You made it ${finalScore} steps out. Tap to run again.</span>
-        `;
+      messageEl.innerHTML = `
+        <strong>Trail ended</strong>
+        <span>You made it ${finalScore} steps out. Tap to run again.</span>
+      `;
+      messageEl.classList.add("show");
+    }
+
+    function roundedRect(x, y, w, h, r) {
+      ctx.beginPath();
+
+      if (ctx.roundRect) {
+        ctx.roundRect(x, y, w, h, r);
+      } else {
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+      }
+    }
+
+    function draw() {
+      drawBackground();
+
+      obstacles.forEach(drawObstacle);
+      drawParticles();
+      drawPlayer();
+
+      if (!running && !gameOver) {
         messageEl.classList.add("show");
       }
 
-      function roundedRect(x, y, w, h, r) {
-        ctx.beginPath();
+      update();
+      requestAnimationFrame(draw);
+    }
 
-        if (ctx.roundRect) {
-          ctx.roundRect(x, y, w, h, r);
-        } else {
-          ctx.moveTo(x + r, y);
-          ctx.lineTo(x + w - r, y);
-          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-          ctx.lineTo(x + w, y + h - r);
-          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-          ctx.lineTo(x + r, y + h);
-          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-          ctx.lineTo(x, y + r);
-          ctx.quadraticCurveTo(x, y, x + r, y);
-        }
+    window.addEventListener("resize", resizeCanvas);
+
+    window.addEventListener("keydown", (event) => {
+      if (event.code === "Space" || event.code === "ArrowUp") {
+        event.preventDefault();
+        jump();
       }
+    });
 
-      function draw() {
-        drawBackground();
+    canvas.addEventListener("pointerdown", jump);
+    messageEl.addEventListener("pointerdown", jump);
 
-        obstacles.forEach(drawObstacle);
-        drawParticles();
-        drawPlayer();
-
-        if (!running && !gameOver) {
-          messageEl.classList.add("show");
-        }
-
-        update();
-        requestAnimationFrame(draw);
-      }
-
-      window.addEventListener("resize", resizeCanvas);
-
-      window.addEventListener("keydown", (event) => {
-        if (event.code === "Space" || event.code === "ArrowUp") {
-          event.preventDefault();
-          jump();
-        }
-      });
-
-      canvas.addEventListener("pointerdown", jump);
-      messageEl.addEventListener("pointerdown", jump);
-
-      resizeCanvas();
-      draw();
-    </script>
-  </body>
-</html>
+    resizeCanvas();
+    draw();
+  </script>
+</BaseLayout>
 
 <style>
-  :root {
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-    color: #f5f1e8;
-    background: #172117;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(124, 185, 9, 0.25), transparent 35%),
-      linear-gradient(135deg, #111811, #0c2002);
-  }
-
-  main {
-    width: min(1100px, calc(100% - 32px));
-    margin: 0 auto;
-    padding: 48px 0 80px;
-  }
-
   .back-link {
     display: inline-block;
-    margin-bottom: 42px;
-    color: #c9d8a6;
+    margin-bottom: 48px;
+    color: var(--text-muted);
     font-weight: 800;
     text-decoration: none;
   }
 
   .back-link:hover {
-    text-decoration: underline;
+    color: var(--text-main);
   }
 
   .eyebrow {
     margin: 0 0 12px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 900;
     letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
-  h1 {
-    margin: 0;
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    line-height: 0.9;
-    letter-spacing: -0.07em;
-  }
-
-  .intro {
-    max-width: 720px;
-    margin: 24px 0 0;
-    color: #ded8c8;
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
-    line-height: 1.6;
-  }
-
   .game-shell {
     position: relative;
     overflow: hidden;
     margin-top: 48px;
-    border: 1px solid rgba(245, 241, 232, 0.18);
+    border: 1px solid var(--card-border);
     border-radius: 28px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--card);
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
   }
 
@@ -868,13 +819,13 @@
     border: 1px solid rgba(245, 241, 232, 0.16);
     border-radius: 18px;
     padding: 10px 14px;
-    background: rgba(8, 18, 3, 0.45);
+    background: rgba(5, 5, 5, 0.58);
     backdrop-filter: blur(10px);
   }
 
   .hud-box span {
     display: block;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.72rem;
     font-weight: 900;
     letter-spacing: 0.12em;
@@ -884,6 +835,7 @@
   .hud-box strong {
     display: block;
     margin-top: 2px;
+    color: var(--text-main);
     font-size: 1.4rem;
   }
 
@@ -896,7 +848,7 @@
   .stage-pill small {
     display: block;
     margin-top: 3px;
-    color: #f5f1e8;
+    color: var(--text-main);
     font-size: 0.88rem;
     font-weight: 700;
     letter-spacing: normal;
@@ -920,7 +872,7 @@
     place-items: center;
     padding: 24px;
     text-align: center;
-    background: rgba(8, 18, 3, 0.42);
+    background: rgba(5, 5, 5, 0.5);
     backdrop-filter: blur(4px);
     cursor: pointer;
   }
@@ -931,6 +883,7 @@
 
   .game-message strong {
     display: block;
+    color: var(--text-main);
     font-size: clamp(2rem, 5vw, 4rem);
     letter-spacing: -0.05em;
   }
@@ -938,25 +891,17 @@
   .game-message span {
     display: block;
     margin-top: 12px;
-    color: #ded8c8;
+    color: var(--text-muted);
     font-size: 1.1rem;
   }
 
   .hint {
     margin: 18px 0 0;
-    color: #d5ccb8;
+    color: var(--text-muted);
     text-align: center;
   }
 
   @media (max-width: 700px) {
-    main {
-      padding-top: 32px;
-    }
-
-    .back-link {
-      margin-bottom: 28px;
-    }
-
     .game-shell {
       border-radius: 22px;
     }

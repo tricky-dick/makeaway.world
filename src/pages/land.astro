@@ -1,267 +1,231 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Camden County Property Research | Makeaway</title>
-    <meta
-      name="description"
-      content="Research notes for a Camden County, Georgia A-F zoned property being evaluated for a family compound and homestead."
-    />
-  </head>
+<BaseLayout
+  title="Camden County Property Research | Makeaway"
+  description="Research notes for a Camden County, Georgia A-F zoned property being evaluated for a family compound and homestead."
+>
+  <section class="page-content">
+    <a class="back-link" href="/">← Back to home</a>
 
-  <body>
-    <main>
-      <a class="back-link" href="/">← Back to home</a>
+    <p class="eyebrow">Makeaway / Research</p>
 
-      <section class="hero">
-        <p class="eyebrow">Makeaway Research</p>
-        <h1>Camden County Property Research</h1>
-        <p class="intro">
-          Notes, links, and open questions for evaluating a rural Camden County,
-          Georgia property as a possible family compound and homestead.
-        </p>
-      </section>
+    <h1>Camden County Property Research</h1>
 
-      <section class="summary-grid">
-        <article class="summary-card">
-          <span class="label">Location</span>
-          <strong>Camden County, Georgia</strong>
-          <p>Near White Oak / Owens Ferry Road area.</p>
-        </article>
+    <p class="intro">
+      Notes, links, and open questions for evaluating a rural Camden County,
+      Georgia property as a possible family compound and homestead.
+    </p>
+  </section>
 
-        <article class="summary-card">
-          <span class="label">Parcel ID</span>
-          <strong>039 004</strong>
-          <p>Identified from the Camden County zoning lookup map.</p>
-        </article>
+  <section class="summary-grid">
+    <article class="summary-card">
+      <span class="label">Location</span>
+      <strong>Camden County, Georgia</strong>
+      <p>Near White Oak / Owens Ferry Road area.</p>
+    </article>
 
-        <article class="summary-card">
-          <span class="label">Zoning / Land Use</span>
-          <strong>A-F</strong>
-          <p>Agriculture Forestry.</p>
-        </article>
+    <article class="summary-card">
+      <span class="label">Parcel ID</span>
+      <strong>039 004</strong>
+      <p>Identified from the Camden County zoning lookup map.</p>
+    </article>
 
-        <article class="summary-card">
-          <span class="label">Coordinates</span>
-          <strong>30.987852, -81.801919</strong>
-          <p>Coordinates used to locate the tract on the zoning map.</p>
-        </article>
-      </section>
+    <article class="summary-card">
+      <span class="label">Zoning / Land Use</span>
+      <strong>A-F</strong>
+      <p>Agriculture Forestry.</p>
+    </article>
 
-      <section class="content-section">
-        <h2>Goal</h2>
+    <article class="summary-card">
+      <span class="label">Coordinates</span>
+      <strong>30.987852, -81.801919</strong>
+      <p>Coordinates used to locate the tract on the zoning map.</p>
+    </article>
+  </section>
+
+  <section class="content-section">
+    <h2>Goal</h2>
+    <p>
+      The goal is to determine whether this property could support a multi-home
+      family compound, homestead, or rural retreat while staying compliant with
+      Camden County zoning, septic, well, access, and building requirements.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2>What I’ve Found So Far</h2>
+
+    <div class="finding-list">
+      <article class="finding">
+        <h3>The parcel appears to be A-F Agriculture Forestry.</h3>
         <p>
-          The goal is to determine whether this property could support a
-          multi-home family compound, homestead, or rural retreat while staying
-          compliant with Camden County zoning, septic, well, access, and building
-          requirements.
+          The Camden County zoning lookup showed Parcel ID <strong>039 004</strong>
+          with Land Use Code <strong>A-F</strong> and Land Use Description
+          <strong>Agriculture Forestry</strong>.
         </p>
-      </section>
+      </article>
 
-      <section class="content-section">
-        <h2>What I’ve Found So Far</h2>
-
-        <div class="finding-list">
-          <article class="finding">
-            <h3>The parcel appears to be A-F Agriculture Forestry.</h3>
-            <p>
-              The Camden County zoning lookup showed Parcel ID <strong>039 004</strong>
-              with Land Use Code <strong>A-F</strong> and Land Use Description
-              <strong>Agriculture Forestry</strong>.
-            </p>
-          </article>
-
-          <article class="finding">
-            <h3>A-F zoning may be favorable for a family compound.</h3>
-            <p>
-              The county code needs to be confirmed directly with Camden County,
-              but A-F appears to be one of the zoning categories where rural
-              residential, agricultural, and family-use dwelling options may be
-              possible.
-            </p>
-          </article>
-
-          <article class="finding">
-            <h3>Septic and well feasibility may be the real limiting factor.</h3>
-            <p>
-              Even if zoning allows additional dwellings, each house may require
-              Health Department approval for septic and well placement. Soil,
-              upland acreage, wetlands, floodplain, and spacing requirements
-              could limit the number of practical homesites.
-            </p>
-          </article>
-
-          <article class="finding">
-            <h3>Multiple homes need county confirmation.</h3>
-            <p>
-              The biggest question is whether multiple single-family dwellings
-              can remain on one owner-occupied parcel, or whether Camden County
-              would require subdivision, separate addresses, or another approval
-              process.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <h2>Important Links</h2>
-
-        <div class="link-grid">
-          <a
-            class="link-card"
-            href="https://ccboc.maps.arcgis.com/apps/instant/lookup/index.html?appid=38333ef7a1d54dbc9a6fa0ac1610dd84"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="label">Map</span>
-            <strong>Camden County Zoning Look-Up</strong>
-            <p>Used to locate Parcel ID 039 004 and confirm A-F land use.</p>
-          </a>
-
-          <a
-            class="link-card"
-            href="https://www.camdencountyga.gov/1239/Ordinances-Codes#docaccess-d4cf997f699fcb89fac314f81b34ce36e60effb80fbc60320b7c85dad1dd8909"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="label">Code</span>
-            <strong>Camden County Ordinances & Codes</strong>
-            <p>County ordinances and development code documents.</p>
-          </a>
-
-          <a
-            class="link-card"
-            href="https://www.camdencountyga.gov/1246/Zoning"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="label">County</span>
-            <strong>Camden County Zoning</strong>
-            <p>Official county zoning information and related resources.</p>
-          </a>
-
-          <a
-            class="link-card"
-            href="https://www.camdencountyga.gov/74/Planning-Development"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="label">Contact</span>
-            <strong>Planning & Development</strong>
-            <p>Department to contact before relying on any interpretation.</p>
-          </a>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <h2>Questions to Ask Camden County</h2>
-
-        <div class="question-box">
-          <p>
-            I am considering purchasing Parcel ID <strong>039 004</strong>,
-            located near Owens Ferry Road in Camden County, Georgia. The zoning
-            lookup appears to show the property as <strong>A-F Agriculture Forestry</strong>.
-          </p>
-
-          <p>
-            I would like to know whether this parcel can be used for an
-            owner-occupied family compound or homestead with multiple
-            single-family dwellings for family members.
-          </p>
-
-          <ol>
-            <li>Can you confirm the exact zoning district for Parcel ID 039 004?</li>
-            <li>Does A-F zoning allow multiple single-family dwellings on one owner-occupied parcel?</li>
-            <li>If yes, how many dwellings could be allowed on approximately 25 acres?</li>
-            <li>Would the additional dwellings require subdivision?</li>
-            <li>Would each dwelling need its own septic system and well?</li>
-            <li>Are modular homes, manufactured homes, barndominiums, or tiny homes allowed?</li>
-            <li>Are there floodplain, wetland, or upland soil limitations on this parcel?</li>
-            <li>Can RVs or campers be used temporarily during construction?</li>
-            <li>Would separate addresses be available for family dwellings?</li>
-            <li>What permits or pre-application meetings would be required?</li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <h2>Due Diligence Checklist</h2>
-
-        <div class="checklist">
-          <label><input type="checkbox" /> Confirm zoning with Camden County Planning</label>
-          <label><input type="checkbox" /> Confirm whether multiple dwellings are allowed</label>
-          <label><input type="checkbox" /> Ask if subdivision is required</label>
-          <label><input type="checkbox" /> Request parcel survey or plat</label>
-          <label><input type="checkbox" /> Review deed restrictions and easements</label>
-          <label><input type="checkbox" /> Check wetlands and floodplain</label>
-          <label><input type="checkbox" /> Verify soil suitability for septic</label>
-          <label><input type="checkbox" /> Confirm well requirements and spacing</label>
-          <label><input type="checkbox" /> Confirm driveway / road access requirements</label>
-          <label><input type="checkbox" /> Confirm power provider and utility access</label>
-          <label><input type="checkbox" /> Ask about livestock, gardens, and agricultural use</label>
-          <label><input type="checkbox" /> Estimate cost for land clearing, driveway, well, septic, and power</label>
-        </div>
-      </section>
-
-      <section class="content-section warning">
-        <h2>Important Note</h2>
+      <article class="finding">
+        <h3>A-F zoning may be favorable for a family compound.</h3>
         <p>
-          This page is a research notebook, not legal, zoning, engineering, or
-          permitting advice. Before making an offer, the intended use should be
-          confirmed directly with Camden County Planning & Development, the
-          Camden County Health Department, a surveyor, and a real estate attorney
-          or closing professional.
+          The county code needs to be confirmed directly with Camden County, but
+          A-F appears to be one of the zoning categories where rural residential,
+          agricultural, and family-use dwelling options may be possible.
         </p>
-      </section>
-    </main>
-  </body>
-</html>
+      </article>
+
+      <article class="finding">
+        <h3>Septic and well feasibility may be the real limiting factor.</h3>
+        <p>
+          Even if zoning allows additional dwellings, each house may require
+          Health Department approval for septic and well placement. Soil, upland
+          acreage, wetlands, floodplain, and spacing requirements could limit
+          the number of practical homesites.
+        </p>
+      </article>
+
+      <article class="finding">
+        <h3>Multiple homes need county confirmation.</h3>
+        <p>
+          The biggest question is whether multiple single-family dwellings can
+          remain on one owner-occupied parcel, or whether Camden County would
+          require subdivision, separate addresses, or another approval process.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Important Links</h2>
+
+    <div class="link-grid">
+      <a
+        class="link-card"
+        href="https://ccboc.maps.arcgis.com/apps/instant/lookup/index.html?appid=38333ef7a1d54dbc9a6fa0ac1610dd84"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="label">Map</span>
+        <strong>Camden County Zoning Look-Up</strong>
+        <p>Used to locate Parcel ID 039 004 and confirm A-F land use.</p>
+      </a>
+
+      <a
+        class="link-card"
+        href="https://www.camdencountyga.gov/1239/Ordinances-Codes#docaccess-d4cf997f699fcb89fac314f81b34ce36e60effb80fbc60320b7c85dad1dd8909"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="label">Code</span>
+        <strong>Camden County Ordinances & Codes</strong>
+        <p>County ordinances and development code documents.</p>
+      </a>
+
+      <a
+        class="link-card"
+        href="https://www.camdencountyga.gov/1246/Zoning"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="label">County</span>
+        <strong>Camden County Zoning</strong>
+        <p>Official county zoning information and related resources.</p>
+      </a>
+
+      <a
+        class="link-card"
+        href="https://www.camdencountyga.gov/74/Planning-Development"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="label">Contact</span>
+        <strong>Planning & Development</strong>
+        <p>Department to contact before relying on any interpretation.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Questions to Ask Camden County</h2>
+
+    <div class="question-box">
+      <p>
+        I am considering purchasing Parcel ID <strong>039 004</strong>, located
+        near Owens Ferry Road in Camden County, Georgia. The zoning lookup
+        appears to show the property as
+        <strong>A-F Agriculture Forestry</strong>.
+      </p>
+
+      <p>
+        I would like to know whether this parcel can be used for an
+        owner-occupied family compound or homestead with multiple single-family
+        dwellings for family members.
+      </p>
+
+      <ol>
+        <li>Can you confirm the exact zoning district for Parcel ID 039 004?</li>
+        <li>Does A-F zoning allow multiple single-family dwellings on one owner-occupied parcel?</li>
+        <li>If yes, how many dwellings could be allowed on approximately 25 acres?</li>
+        <li>Would the additional dwellings require subdivision?</li>
+        <li>Would each dwelling need its own septic system and well?</li>
+        <li>Are modular homes, manufactured homes, barndominiums, or tiny homes allowed?</li>
+        <li>Are there floodplain, wetland, or upland soil limitations on this parcel?</li>
+        <li>Can RVs or campers be used temporarily during construction?</li>
+        <li>Would separate addresses be available for family dwellings?</li>
+        <li>What permits or pre-application meetings would be required?</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Due Diligence Checklist</h2>
+
+    <div class="checklist">
+      <label><input type="checkbox" /> Confirm zoning with Camden County Planning</label>
+      <label><input type="checkbox" /> Confirm whether multiple dwellings are allowed</label>
+      <label><input type="checkbox" /> Ask if subdivision is required</label>
+      <label><input type="checkbox" /> Request parcel survey or plat</label>
+      <label><input type="checkbox" /> Review deed restrictions and easements</label>
+      <label><input type="checkbox" /> Check wetlands and floodplain</label>
+      <label><input type="checkbox" /> Verify soil suitability for septic</label>
+      <label><input type="checkbox" /> Confirm well requirements and spacing</label>
+      <label><input type="checkbox" /> Confirm driveway / road access requirements</label>
+      <label><input type="checkbox" /> Confirm power provider and utility access</label>
+      <label><input type="checkbox" /> Ask about livestock, gardens, and agricultural use</label>
+      <label><input type="checkbox" /> Estimate cost for land clearing, driveway, well, septic, and power</label>
+    </div>
+  </section>
+
+  <section class="content-section warning">
+    <h2>Important Note</h2>
+    <p>
+      This page is a research notebook, not legal, zoning, engineering, or
+      permitting advice. Before making an offer, the intended use should be
+      confirmed directly with Camden County Planning & Development, the Camden
+      County Health Department, a surveyor, and a real estate attorney or
+      closing professional.
+    </p>
+  </section>
+</BaseLayout>
 
 <style>
-  :root {
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-    color: #f5f1e8;
-    background: #172117;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(124, 185, 9, 0.22), transparent 35%),
-      linear-gradient(135deg, #111811, #0c2002);
-  }
-
-  main {
-    width: min(1080px, calc(100% - 36px));
-    margin: 0 auto;
-    padding: 64px 0 96px;
-  }
-
   .back-link {
     display: inline-block;
     margin-bottom: 48px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-weight: 800;
     text-decoration: none;
   }
 
   .back-link:hover {
-    text-decoration: underline;
+    color: var(--text-main);
   }
 
   .eyebrow,
   .label {
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.78rem;
     font-weight: 900;
     letter-spacing: 0.14em;
@@ -270,22 +234,6 @@
 
   .eyebrow {
     margin: 0 0 14px;
-  }
-
-  h1 {
-    max-width: 920px;
-    margin: 0;
-    font-size: clamp(3.2rem, 8vw, 7rem);
-    line-height: 0.92;
-    letter-spacing: -0.07em;
-  }
-
-  .intro {
-    max-width: 760px;
-    margin: 28px 0 0;
-    color: #ded8c8;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.6;
   }
 
   .summary-grid {
@@ -301,10 +249,9 @@
   .question-box,
   .warning,
   .checklist {
-    border: 1px solid rgba(245, 241, 232, 0.18);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
+    background: var(--card);
   }
 
   .summary-card {
@@ -314,12 +261,13 @@
   .summary-card strong {
     display: block;
     margin: 10px 0;
+    color: var(--text-main);
     font-size: 1.35rem;
   }
 
   .summary-card p {
     margin: 0;
-    color: #d5ccb8;
+    color: var(--text-muted);
     line-height: 1.5;
   }
 
@@ -327,21 +275,23 @@
     margin-top: 72px;
   }
 
-  h2 {
+  .content-section h2 {
     margin: 0 0 22px;
+    color: var(--text-main);
     font-size: clamp(1.8rem, 3vw, 2.5rem);
     letter-spacing: -0.04em;
   }
 
-  h3 {
+  .content-section h3 {
     margin: 0 0 10px;
+    color: var(--text-main);
     font-size: 1.25rem;
   }
 
   .content-section > p {
     max-width: 820px;
     margin: 0;
-    color: #ded8c8;
+    color: var(--text-muted);
     font-size: 1.08rem;
     line-height: 1.7;
   }
@@ -357,7 +307,7 @@
 
   .finding p {
     margin: 0;
-    color: #d5ccb8;
+    color: var(--text-muted);
     line-height: 1.6;
   }
 
@@ -371,7 +321,7 @@
   .link-card:visited {
     display: block;
     padding: 24px;
-    color: inherit;
+    color: var(--text-main);
     text-decoration: none;
     transition:
       transform 180ms ease,
@@ -382,20 +332,21 @@
 
   .link-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(201, 216, 166, 0.7);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    border-color: rgba(245, 241, 232, 0.45);
+    background: var(--card-hover);
+    box-shadow: 0 18px 45px rgba(255, 255, 255, 0.06);
   }
 
   .link-card strong {
     display: block;
     margin: 10px 0;
+    color: var(--text-main);
     font-size: 1.25rem;
   }
 
   .link-card p {
     margin: 0;
-    color: #d5ccb8;
+    color: var(--text-muted);
     line-height: 1.55;
   }
 
@@ -405,14 +356,14 @@
 
   .question-box p {
     margin: 0 0 18px;
-    color: #ded8c8;
+    color: var(--text-muted);
     line-height: 1.65;
   }
 
   .question-box ol {
     margin: 22px 0 0;
     padding-left: 24px;
-    color: #f5f1e8;
+    color: var(--text-main);
   }
 
   .question-box li {
@@ -430,22 +381,22 @@
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    color: #ded8c8;
+    color: var(--text-muted);
     line-height: 1.45;
   }
 
   .checklist input {
     margin-top: 3px;
-    accent-color: #c9d8a6;
+    accent-color: var(--text-main);
   }
 
   .warning {
     padding: 28px;
-    border-color: rgba(201, 216, 166, 0.35);
+    border-color: rgba(245, 241, 232, 0.35);
   }
 
   .warning p {
-    color: #ded8c8;
+    color: var(--text-muted);
   }
 
   @media (max-width: 900px) {
@@ -459,12 +410,12 @@
   }
 
   @media (max-width: 600px) {
-    main {
-      padding: 44px 0 72px;
-    }
-
     .summary-grid {
       grid-template-columns: 1fr;
+    }
+
+    .content-section {
+      margin-top: 52px;
     }
   }
 </style>

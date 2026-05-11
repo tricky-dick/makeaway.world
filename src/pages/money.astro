@@ -1,153 +1,97 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Money | Makeaway</title>
-    <meta
-      name="description"
-      content="Build notes from Makeaway — side projects, websites, tools, experiments, and learning by making things."
-    />
-  </head>
+<BaseLayout
+  title="Money | Makeaway"
+  description="Money notes from Makeaway — investing, dividends, options, retirement, taxes, and building more financial independence over time."
+>
+  <section class="page-content">
+    <a class="back-link" href="/">← Back to home</a>
 
-  <body>
-    <main>
-      <a class="back-link" href="/">← Back to home</a>
-  <img
-        class="site-logo"
-        src="/makeaway-logo-transparent.png"
-        alt="Make a Way logo"
-      />
-      <p class="eyebrow">Makeaway / Build</p>
+    <p class="eyebrow">Makeaway / Money</p>
 
-      <h1>Money</h1>
+    <h1>Money</h1>
 
-      <p class="intro">
-        Side projects, websites, experiments, useful tools, and notes from
-        learning by actually making things.
-      </p>
+    <p class="intro">
+      Investing, dividends, options, retirement planning, taxes, and the long
+      road toward more financial independence.
+    </p>
+  </section>
 
+  <section class="link-section">
+    <h2>Money Moves</h2>
 
+    <div class="article-list">
+      <a class="article-button" href="/money/401k-basics">
+        401K basics
+      </a>
 
-      <section class="link-section">
-        <h2>Money Moves</h2>
+      <a class="article-button" href="/money/trading-options">
+        Trading options
+      </a>
 
-<div class="article-list">
-  <a class="article-button" href="/build/building-a-chicken-coop">
-    401K basics
-  </a>
-<br></br>
-  <a class="article-button" href="/build/building-a-chuck-box">
-    Trading options
-  </a>
-<br></br>
-  <a class="article-button" href="/build/survivalist-shelters">
-    Stock picking
-  </a>
-<br></br>
-  <a class="article-button" href="/build/newsletter-signup">
-    Health care and tax avoidance
-  </a>
-<br></br>
-  <a class="article-button" href="/build/digital-product-guide">
-    Does anyone even care?
-  </a>
-</div>
- 
-    </main>
-  </body>
-</html>
+      <a class="article-button" href="/money/stock-picking">
+        Stock picking
+      </a>
+
+      <a class="article-button" href="/money/health-care-and-tax-avoidance">
+        Health care and tax avoidance
+      </a>
+
+      <a class="article-button" href="/money/does-anyone-even-care">
+        Does anyone even care?
+      </a>
+    </div>
+  </section>
+</BaseLayout>
 
 <style>
-      .site-logo {
-    width: min(520px, 100%);
-    height: auto;
-    display: block;
-    margin: 0 0 34px;}
-  :root {
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", sans-serif;
-    color: #f5f1e8;
-    background: #172117;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(124, 185, 9, 0.25), transparent 35%),
-      linear-gradient(135deg, #111811, #0c2002);
-  }
-
-  main {
-    width: min(980px, calc(100% - 40px));
-    margin: 0 auto;
-    padding: 80px 0;
-  }
-
   .back-link {
     display: inline-block;
     margin-bottom: 48px;
-    color: #c9d8a6;
-    font-weight: 700;
+    color: var(--text-muted);
+    font-weight: 800;
     text-decoration: none;
   }
 
   .back-link:hover {
-    text-decoration: underline;
+    color: var(--text-main);
   }
 
   .eyebrow {
     margin: 0 0 14px;
-    color: #c9d8a6;
+    color: var(--text-muted);
     font-size: 0.9rem;
     font-weight: 800;
     letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
-  h1 {
-    margin: 0;
-    font-size: clamp(4rem, 10vw, 8rem);
-    line-height: 0.9;
-    letter-spacing: -0.07em;
-  }
-
-  .intro {
-    max-width: 720px;
-    margin: 28px 0 0;
-    color: #ded8c8;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.6;
-  }
-
   .link-section {
     margin-top: 72px;
   }
 
-  h2 {
+  .link-section h2 {
     margin: 0 0 22px;
+    color: var(--text-main);
     font-size: 1.6rem;
   }
 
-  .link-grid {
+  .article-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    gap: 14px;
   }
 
-  .link-card,
-  .link-card:visited {
+  .article-button,
+  .article-button:visited {
     display: block;
-    border: 1px solid rgba(245, 241, 232, 0.18);
-    border-radius: 24px;
-    padding: 24px;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
-    color: inherit;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px 20px;
+    background: var(--card);
+    color: var(--text-main);
+    font-weight: 800;
     text-decoration: none;
     transition:
       transform 180ms ease,
@@ -156,83 +100,21 @@
       box-shadow 180ms ease;
   }
 
-  .link-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(201, 216, 166, 0.7);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  .article-button:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 241, 232, 0.45);
+    background: var(--card-hover);
+    box-shadow: 0 18px 45px rgba(255, 255, 255, 0.06);
   }
 
-  .label {
-    display: inline-block;
-    margin-bottom: 12px;
-    color: #c9d8a6;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .link-card strong {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 1.25rem;
-  }
-
-  .link-card p {
-    margin: 0;
-    color: #d5ccb8;
-    line-height: 1.55;
-  }
-
- .article-list {
-  display: grid;
-  gap: 14px;
-}
-
-.article-button,
-.article-button:visited {
-  display: block;
-  border: 1px solid rgba(245, 241, 232, 0.18);
-  border-radius: 18px;
-  padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5f1e8;
-  font-weight: 800;
-  text-decoration: none;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.article-button:hover {
-  transform: translateY(-4px);
-  border-color: rgba(201, 216, 166, 0.7);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
-}
-
-.article-button:focus-visible {
-  outline: 3px solid #c9d8a6;
-  outline-offset: 4px;
-}
-
-  .idea-list li {
-    border-left: 3px solid #c9d8a6;
-    padding: 12px 0 12px 18px;
-    color: #ded8c8;
-    background: rgba(255, 255, 255, 0.03);
+  .article-button:focus-visible {
+    outline: 3px solid var(--text-main);
+    outline-offset: 4px;
   }
 
   @media (max-width: 800px) {
-    main {
-      padding: 56px 0;
-    }
-
-    .link-grid {
-      grid-template-columns: 1fr;
+    .link-section {
+      margin-top: 52px;
     }
   }
 </style>
