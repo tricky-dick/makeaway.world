@@ -2,932 +2,918 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout
-  title="Trail Runner | Makeaway"
-  description="A small Makeaway trail runner game. Tap, click, or press space to jump."
->
-  <section class="page-content">
-    <a class="back-link" href="/">← Back to home</a>
+<BaseLayout title="Runes of the Way">
+  <main class="game-page">
+    <section class="game-header">
+      <p class="eyebrow">Make A Way Game</p>
+      <h1>Runes of the Way</h1>
+      <p>
+        Escape The Grid before it resets. Collect all 5 runes, avoid the Wardens,
+        and reach the Freedom Gate.
+      </p>
+    </section>
 
-    <p class="eyebrow">Makeaway / Game</p>
-
-    <h1>Trail Runner</h1>
-
-    <p class="intro">
-      Escape the rat race. Tap, click, or press <strong>Space</strong> to jump.
-    </p>
-  </section>
-
-  <section class="game-shell">
-    <div class="hud">
-      <div class="hud-box">
-        <span>Score</span>
-        <strong id="score">0</strong>
+    <section class="game-layout">
+      <div class="game-panel">
+        <canvas id="gameCanvas" width="640" height="640"></canvas>
       </div>
 
-      <div class="hud-box stage-pill">
-        <span id="stage-name">Rat Race</span>
-        <small id="stage-subtitle">Keep moving.</small>
-      </div>
+      <aside class="story-panel">
+        <h2>Story</h2>
+        <p id="storyText">
+          You wake inside The Grid. The walls are built from debt, fear,
+          distraction, and routine. Somewhere in the dark, the runes are waiting.
+        </p>
 
-      <div class="hud-box">
-        <span>Best</span>
-        <strong id="best">0</strong>
-      </div>
-    </div>
+        <div class="stats-grid">
+          <div>
+            <span>Runes</span>
+            <strong><span id="runeCount">0</span> / 5</strong>
+          </div>
 
-    <canvas id="game" width="1000" height="420"></canvas>
+          <div>
+            <span>Lives</span>
+            <strong id="livesCount">3</strong>
+          </div>
 
-    <div class="game-message" id="message">
-      <strong>Tap to start</strong>
-      <span>Jump the obstacles. Keep making a way.</span>
-    </div>
-  </section>
+          <div>
+            <span>Time</span>
+            <strong id="timeCount">90</strong>
+          </div>
 
-  <p class="hint">
-    Desktop: Space / click. Phone: tap anywhere on the game.
-  </p>
+          <div>
+            <span>Score</span>
+            <strong id="scoreCount">0</strong>
+          </div>
+        </div>
 
-  <script is:inline>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-    const scoreEl = document.getElementById("score");
-    const bestEl = document.getElementById("best");
-    const messageEl = document.getElementById("message");
-    const stageNameEl = document.getElementById("stage-name");
-    const stageSubtitleEl = document.getElementById("stage-subtitle");
+        <div class="status-box">
+          <p><strong>Status:</strong> <span id="gameStatus">Find the runes</span></p>
+          <p><strong>Rank:</strong> <span id="rankText">Unproven</span></p>
+        </div>
 
-    const DPR = Math.max(1, window.devicePixelRatio || 1);
-    const baseWidth = 1000;
+        <div class="controls">
+          <h3>Controls</h3>
+          <p>Move with <strong>WASD</strong> or <strong>Arrow Keys</strong>.</p>
+          <p>Collect hidden runes to reveal, endure, move faster, and break through walls.</p>
+          <button id="restartButton" type="button">Restart Game</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+</BaseLayout>
 
-    let running = false;
-    let gameOver = false;
-    let score = 0;
-    let best = Number(localStorage.getItem("makeaway-best-score") || 0);
-    let speed = 6;
-    let frame = 0;
-    let obstacles = [];
-    let particles = [];
-    let nextObstacleFrame = 90;
+<script is:inline>
+  // @ts-nocheck
 
-    bestEl.textContent = best;
+  const canvas = document.getElementById("gameCanvas");
 
-    const stages = [
-      {
-        minScore: 0,
-        name: "Rat Race",
-        subtitle: "Keep moving.",
-        skyTop: "#252832",
-        skyBottom: "#111318",
-        ground: "#171a1f",
-        mountainBack: "#303540",
-        mountainMid: "#262b34",
-        sun: "rgba(245, 241, 232, 0.35)",
-        trailLine: "rgba(245, 241, 232, 0.12)",
-      },
-      {
-        minScore: 100,
-        name: "Backroad",
-        subtitle: "Out of the noise.",
-        skyTop: "#36414b",
-        skyBottom: "#202818",
-        ground: "#1a2412",
-        mountainBack: "#3a4a31",
-        mountainMid: "#26371f",
-        sun: "rgba(217, 201, 142, 0.62)",
-        trailLine: "rgba(245, 241, 232, 0.16)",
-      },
-      {
-        minScore: 250,
-        name: "Pine Woods",
-        subtitle: "Less noise. More signal.",
-        skyTop: "#2b4a3a",
-        skyBottom: "#13210f",
-        ground: "#172117",
-        mountainBack: "#304822",
-        mountainMid: "#1d321b",
-        sun: "rgba(201, 216, 166, 0.72)",
-        trailLine: "rgba(245, 241, 232, 0.18)",
-      },
-      {
-        minScore: 500,
-        name: "Coastal Trail",
-        subtitle: "Sand, scrub, and open air.",
-        skyTop: "#547f91",
-        skyBottom: "#233b2a",
-        ground: "#1a2112",
-        mountainBack: "#5c6f46",
-        mountainMid: "#314522",
-        sun: "rgba(232, 213, 154, 0.78)",
-        trailLine: "rgba(245, 241, 232, 0.22)",
-      },
-      {
-        minScore: 800,
-        name: "Homestead",
-        subtitle: "Build the life.",
-        skyTop: "#5f7f52",
-        skyBottom: "#172117",
-        ground: "#172117",
-        mountainBack: "#526b3a",
-        mountainMid: "#263f22",
-        sun: "rgba(232, 213, 154, 0.88)",
-        trailLine: "rgba(245, 241, 232, 0.24)",
-      },
-    ];
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    throw new Error("Game canvas not found.");
+  }
 
-    const player = {
-      x: 130,
-      y: 295,
-      width: 48,
-      height: 64,
-      velocityY: 0,
-      grounded: true,
-    };
+  const ctx = canvas.getContext("2d");
 
-    function getCurrentScore() {
-      return Math.floor(score / 5);
+  if (!ctx) {
+    throw new Error("Canvas context could not be created.");
+  }
+
+  function getElement(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+      throw new Error(`Missing element: ${id}`);
     }
 
-    function getCurrentStage() {
-      const currentScore = getCurrentScore();
-      let currentStage = stages[0];
+    return element;
+  }
 
-      for (const stage of stages) {
-        if (currentScore >= stage.minScore) {
-          currentStage = stage;
-        }
-      }
+  const storyText = getElement("storyText");
+  const runeCount = getElement("runeCount");
+  const livesCount = getElement("livesCount");
+  const timeCount = getElement("timeCount");
+  const scoreCount = getElement("scoreCount");
+  const gameStatus = getElement("gameStatus");
+  const rankText = getElement("rankText");
+  const restartButton = getElement("restartButton");
 
-      return currentStage;
+  const tileSize = 40;
+  const totalRunes = 5;
+  const startingTime = 90;
+
+  const originalMap = [
+    "################",
+    "#P.....#.......#",
+    "#.###..#.###.#.#",
+    "#...#..#...#.#.#",
+    "###.#.###.#.#..#",
+    "#...#.....#....#",
+    "#.#####.#####..#",
+    "#.....#.....#..#",
+    "#.###.###.#.#.##",
+    "#.#.....#.#....#",
+    "#.#.###.#.####.#",
+    "#...#...#......#",
+    "###.#.#######..#",
+    "#...#..........#",
+    "#.....#.......G#",
+    "################",
+  ];
+
+  const runeData = [
+    {
+      x: 5,
+      y: 1,
+      symbol: "ᚠ",
+      name: "Wealth Rune",
+      message:
+        "You found the Wealth Rune. Debt weakens. The maze can no longer feed on your confusion.",
+    },
+    {
+      x: 13,
+      y: 1,
+      symbol: "ᛒ",
+      name: "Build Rune",
+      message:
+        "You found the Build Rune. Skills become tools. Tools become leverage. Leverage becomes a way out.",
+    },
+    {
+      x: 1,
+      y: 7,
+      symbol: "ᚱ",
+      name: "Road Rune",
+      message:
+        "You found the Road Rune. The default path cracks beneath your feet. You are no longer walking in circles.",
+    },
+    {
+      x: 12,
+      y: 13,
+      symbol: "ᛟ",
+      name: "Land Rune",
+      message:
+        "You found the Land Rune. Own your space. Build your base. Freedom needs somewhere to stand.",
+    },
+    {
+      x: 3,
+      y: 14,
+      symbol: "ᛏ",
+      name: "Freedom Rune",
+      message:
+        "You found the Freedom Rune. The gate hears you now. The way out is opening.",
+    },
+  ];
+
+  const powerUpData = [
+    {
+      x: 9,
+      y: 5,
+      type: "clarity",
+      symbol: "ᚲ",
+      name: "Clarity Rune",
+      message:
+        "You found the Clarity Rune. The dark pulls back, and the maze reveals more of itself.",
+    },
+    {
+      x: 5,
+      y: 9,
+      type: "guard",
+      symbol: "ᛉ",
+      name: "Guard Rune",
+      message:
+        "You found the Guard Rune. The next Warden that reaches you will break against it.",
+    },
+    {
+      x: 13,
+      y: 7,
+      type: "momentum",
+      symbol: "ᛇ",
+      name: "Momentum Rune",
+      message:
+        "You found the Momentum Rune. For a short time, every step carries more weight.",
+    },
+    {
+      x: 8,
+      y: 11,
+      type: "rupture",
+      symbol: "ᚺ",
+      name: "Rupture Rune",
+      message:
+        "You found the Rupture Rune. Walk into one wall to break it. Sometimes the path has to be made.",
+    },
+  ];
+
+  const enemyStartData = [
+    {
+      x: 7,
+      y: 7,
+      name: "Debt Warden",
+      message: "Debt caught you. The maze feeds on delay.",
+    },
+    {
+      x: 10,
+      y: 10,
+      name: "Distraction Warden",
+      message: "Distraction caught you. The path blurred for a moment.",
+    },
+  ];
+
+  let map = [];
+  let player = { x: 1, y: 1 };
+  let runes = [];
+  let powerUps = [];
+  let enemies = [];
+  let gate = { x: 14, y: 14 };
+  let lives = 3;
+  let timeLeft = startingTime;
+  let score = 0;
+  let gameWon = false;
+  let gameLost = false;
+  let guardActive = false;
+  let ruptureActive = false;
+  let momentumMoves = 0;
+  let fogRadius = 6;
+  let moveCount = 0;
+  let timerInterval = null;
+  let enemyMoveCounter = 0;
+
+  function resetGame() {
+    map = originalMap.map((row) => row.split(""));
+
+    player = { x: 1, y: 1 };
+    runes = runeData.map((rune) => ({ ...rune, collected: false }));
+    powerUps = powerUpData.map((powerUp) => ({ ...powerUp, collected: false }));
+    enemies = enemyStartData.map((enemy) => ({ ...enemy }));
+    gate = { x: 14, y: 14 };
+
+    lives = 3;
+    timeLeft = startingTime;
+    score = 0;
+    gameWon = false;
+    gameLost = false;
+    guardActive = false;
+    ruptureActive = false;
+    momentumMoves = 0;
+    fogRadius = 6;
+    moveCount = 0;
+    enemyMoveCounter = 0;
+
+    storyText.textContent =
+      "You wake inside The Grid. The walls are built from debt, fear, distraction, and routine. Somewhere in the dark, the runes are waiting.";
+
+    gameStatus.textContent = "Find the runes";
+    rankText.textContent = "Unproven";
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
     }
 
-    function randomBetween(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    timerInterval = setInterval(tickTimer, 1000);
+
+    updateStats();
+    drawGame();
+  }
+
+  function tickTimer() {
+    if (gameWon || gameLost) return;
+
+    timeLeft -= 1;
+
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      loseGame("The Grid reset before you escaped. The maze closes around you.");
     }
 
-    function scheduleNextObstacle() {
-      const currentScore = getCurrentScore();
+    updateStats();
+  }
 
-      let minGap = 70;
-      let maxGap = 130;
+  function updateStats() {
+    const collectedCount = runes.filter((rune) => rune.collected).length;
 
-      if (currentScore > 250) {
-        minGap = 58;
-        maxGap = 115;
-      }
+    runeCount.textContent = collectedCount.toString();
+    livesCount.textContent = lives.toString();
+    timeCount.textContent = timeLeft.toString();
+    scoreCount.textContent = score.toString();
 
-      if (currentScore > 500) {
-        minGap = 48;
-        maxGap = 100;
-      }
-
-      if (currentScore > 800) {
-        minGap = 42;
-        maxGap = 90;
-      }
-
-      nextObstacleFrame = frame + randomBetween(minGap, maxGap);
+    if (score >= 900) {
+      rankText.textContent = "Waymaker";
+    } else if (score >= 600) {
+      rankText.textContent = "Pathfinder";
+    } else if (score >= 300) {
+      rankText.textContent = "Awake";
+    } else {
+      rankText.textContent = "Unproven";
     }
+  }
 
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * DPR;
-      canvas.height = rect.height * DPR;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
+  function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    function resetGame() {
-      running = true;
-      gameOver = false;
-      score = 0;
-      speed = 6;
-      frame = 0;
-      obstacles = [];
-      particles = [];
-      nextObstacleFrame = 90;
-
-      player.y = 295;
-      player.velocityY = 0;
-      player.grounded = true;
-
-      messageEl.classList.remove("show");
-    }
-
-    function jump() {
-      if (!running || gameOver) {
-        resetGame();
-        return;
-      }
-
-      if (player.grounded) {
-        player.velocityY = -17;
-        player.grounded = false;
-        createDust(player.x + 15, player.y + player.height);
-      }
-    }
-
-    function createDust(x, y) {
-      for (let i = 0; i < 10; i++) {
-        particles.push({
-          x,
-          y,
-          size: Math.random() * 4 + 2,
-          vx: Math.random() * -3 - 1,
-          vy: Math.random() * -2,
-          life: 28,
-        });
-      }
-    }
-
-    function spawnObstacle() {
-      const stage = getCurrentStage();
-
-      let types = [
-        { type: "rock", width: 42, height: 38 },
-        { type: "log", width: 62, height: 30 },
-        { type: "marker", width: 28, height: 58 },
-      ];
-
-      if (stage.name === "Rat Race") {
-        types = [
-          { type: "marker", width: 28, height: 58 },
-          { type: "log", width: 64, height: 30 },
-          { type: "rock", width: 44, height: 40 },
-        ];
-      }
-
-      if (stage.name === "Coastal Trail") {
-        types = [
-          { type: "grass", width: 34, height: 54 },
-          { type: "rock", width: 42, height: 36 },
-          { type: "log", width: 68, height: 28 },
-        ];
-      }
-
-      if (stage.name === "Homestead") {
-        types = [
-          { type: "crate", width: 46, height: 42 },
-          { type: "log", width: 68, height: 28 },
-          { type: "marker", width: 28, height: 58 },
-        ];
-      }
-
-      const pick = types[Math.floor(Math.random() * types.length)];
-
-      obstacles.push({
-        ...pick,
-        x: baseWidth + randomBetween(30, 90),
-        y: 360 - pick.height,
-      });
-
-      if (getCurrentScore() > 450 && Math.random() < 0.18) {
-        const secondPick = types[Math.floor(Math.random() * types.length)];
-
-        obstacles.push({
-          ...secondPick,
-          x: baseWidth + randomBetween(150, 240),
-          y: 360 - secondPick.height,
-        });
-      }
-    }
-
-    function drawBackground() {
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      const stage = getCurrentStage();
-
-      stageNameEl.textContent = stage.name;
-      stageSubtitleEl.textContent = stage.subtitle;
-
-      const gradient = ctx.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, stage.skyTop);
-      gradient.addColorStop(0.62, stage.skyBottom);
-      gradient.addColorStop(1, "#081203");
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.beginPath();
-      ctx.arc(width - 125, 85, 46, 0, Math.PI * 2);
-      ctx.fillStyle = stage.sun;
-      ctx.fill();
-
-      if (stage.name === "Rat Race") {
-        drawCityDetails(width, height);
-      } else {
-        drawMountainRange(0.18, stage.mountainBack, 185, 0.18);
-        drawMountainRange(0.35, stage.mountainMid, 230, 0.32);
-      }
-
-      if (stage.name === "Backroad") {
-        drawBackroadDetails(width, height);
-      }
-
-      if (stage.name === "Pine Woods") {
-        drawPineDetails(width, height);
-      }
-
-      if (stage.name === "Coastal Trail") {
-        drawCoastalDetails(width, height);
-      }
-
-      if (stage.name === "Homestead") {
-        drawHomesteadDetails(width, height);
-      }
-
-      ctx.fillStyle = stage.ground;
-      ctx.fillRect(0, 360, width, height - 360);
-
-      ctx.strokeStyle = "rgba(201, 216, 166, 0.35)";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(0, 360);
-      ctx.lineTo(width, 360);
-      ctx.stroke();
-
-      ctx.strokeStyle = stage.trailLine;
-      ctx.lineWidth = 3;
-
-      for (let i = 0; i < 18; i++) {
-        const x = ((i * 110 - frame * speed * 1.5) % (width + 120)) - 80;
-        ctx.beginPath();
-        ctx.moveTo(x, 392);
-        ctx.lineTo(x + 54, 392);
-        ctx.stroke();
-      }
-    }
-
-    function drawCityDetails(width, height) {
-      ctx.save();
-
-      ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
-
-      const baseY = 330;
-      const buildingWidths = [55, 80, 45, 70, 60, 95, 50, 75];
-
-      let x = -40 - ((frame * speed * 0.35) % 120);
-
-      for (let i = 0; x < width + 80; i++) {
-        const w = buildingWidths[i % buildingWidths.length];
-        const h = 70 + ((i * 31) % 90);
-
-        ctx.fillRect(x, baseY - h, w, h);
-
-        ctx.fillStyle = "rgba(245, 241, 232, 0.18)";
-
-        for (let wy = baseY - h + 14; wy < baseY - 12; wy += 18) {
-          for (let wx = x + 10; wx < x + w - 8; wx += 18) {
-            ctx.fillRect(wx, wy, 5, 5);
-          }
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
+        if (map[y][x] === "#") {
+          drawWall(x, y);
+        } else {
+          drawFloor(x, y);
         }
 
-        ctx.fillStyle = "rgba(8, 10, 14, 0.65)";
-        x += w + 18;
+        if (!isVisible(x, y)) {
+          drawFog(x, y);
+        }
       }
-
-      ctx.restore();
     }
 
-    function drawBackroadDetails(width, height) {
-      ctx.save();
+    drawRunes();
+    drawPowerUps();
+    drawGate();
+    drawEnemies();
+    drawPlayer();
 
-      ctx.strokeStyle = "rgba(201, 216, 166, 0.24)";
-      ctx.lineWidth = 4;
-
-      for (let i = 0; i < 8; i++) {
-        const x = ((i * 170 - frame * speed * 0.8) % (width + 180)) - 90;
-
-        ctx.beginPath();
-        ctx.moveTo(x, 330);
-        ctx.lineTo(x + 20, 285);
-        ctx.lineTo(x + 40, 330);
-        ctx.stroke();
-      }
-
-      ctx.restore();
+    if (gameWon || gameLost) {
+      drawEndOverlay();
     }
+  }
 
-    function drawPineDetails(width, height) {
-      ctx.save();
+  function isVisible(x, y) {
+    const distance = Math.abs(player.x - x) + Math.abs(player.y - y);
+    return distance <= fogRadius;
+  }
 
-      ctx.fillStyle = "rgba(8, 18, 3, 0.45)";
+  function drawFloor(x, y) {
+    ctx.fillStyle = "#101510";
+    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
 
-      for (let i = 0; i < 18; i++) {
-        const x = ((i * 85 - frame * speed * 0.65) % (width + 90)) - 45;
-        const treeHeight = 70 + ((i * 17) % 60);
-        const baseY = 360;
+    ctx.strokeStyle = "rgba(245, 241, 232, 0.04)";
+    ctx.strokeRect(x * tileSize, y * tileSize, tileSize, tileSize);
+  }
 
-        ctx.beginPath();
-        ctx.moveTo(x, baseY - treeHeight);
-        ctx.lineTo(x - 28, baseY);
-        ctx.lineTo(x + 28, baseY);
-        ctx.closePath();
-        ctx.fill();
+  function drawWall(x, y) {
+    ctx.fillStyle = "#263326";
+    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
 
-        ctx.fillRect(x - 4, baseY - 18, 8, 18);
-      }
+    ctx.strokeStyle = "rgba(215, 181, 109, 0.16)";
+    ctx.strokeRect(x * tileSize, y * tileSize, tileSize, tileSize);
+  }
 
-      ctx.restore();
-    }
+  function drawFog(x, y) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.72)";
+    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+  }
 
-    function drawCoastalDetails(width, height) {
-      ctx.save();
+  function drawRunes() {
+    runes.forEach((rune) => {
+      if (rune.collected || !isVisible(rune.x, rune.y)) return;
 
-      ctx.strokeStyle = "rgba(232, 213, 154, 0.3)";
-      ctx.lineWidth = 3;
-      ctx.lineCap = "round";
-
-      for (let i = 0; i < 28; i++) {
-        const x = ((i * 48 - frame * speed * 0.85) % (width + 60)) - 30;
-        const baseY = 358;
-        const grassHeight = 26 + ((i * 13) % 42);
-
-        ctx.beginPath();
-        ctx.moveTo(x, baseY);
-        ctx.quadraticCurveTo(
-          x + 12,
-          baseY - grassHeight / 2,
-          x + 5,
-          baseY - grassHeight
-        );
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-
-    function drawHomesteadDetails(width, height) {
-      ctx.save();
-
-      const cabinX = width - 250 - ((frame * speed * 0.25) % 40);
-      const cabinY = 285;
-
-      ctx.fillStyle = "rgba(92, 68, 38, 0.82)";
-      roundedRect(cabinX, cabinY, 120, 75, 8);
-      ctx.fill();
-
-      ctx.fillStyle = "rgba(45, 31, 20, 0.95)";
-      ctx.beginPath();
-      ctx.moveTo(cabinX - 12, cabinY + 8);
-      ctx.lineTo(cabinX + 60, cabinY - 42);
-      ctx.lineTo(cabinX + 132, cabinY + 8);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = "rgba(20, 14, 9, 0.8)";
-      ctx.fillRect(cabinX + 50, cabinY + 32, 24, 43);
-
-      ctx.strokeStyle = "rgba(245, 241, 232, 0.28)";
-      ctx.lineWidth = 3;
-
-      for (let i = 0; i < 6; i++) {
-        const x = 40 + i * 34;
-        ctx.beginPath();
-        ctx.moveTo(x, 330);
-        ctx.lineTo(x, 358);
-        ctx.stroke();
-      }
+      const centerX = rune.x * tileSize + tileSize / 2;
+      const centerY = rune.y * tileSize + tileSize / 2;
 
       ctx.beginPath();
-      ctx.moveTo(30, 342);
-      ctx.lineTo(240, 342);
+      ctx.arc(centerX, centerY, 16, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(215, 181, 109, 0.24)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 22, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(215, 181, 109, 0.28)";
       ctx.stroke();
 
-      ctx.restore();
-    }
+      ctx.fillStyle = "#d7b56d";
+      ctx.font = "28px serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(rune.symbol, centerX, centerY + 1);
+    });
+  }
 
-    function drawMountainRange(parallax, color, baseY, alpha) {
-      const width = canvas.clientWidth;
-      const offset = (frame * speed * parallax) % width;
+  function drawPowerUps() {
+    powerUps.forEach((powerUp) => {
+      if (powerUp.collected || !isVisible(powerUp.x, powerUp.y)) return;
 
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = color;
+      const centerX = powerUp.x * tileSize + tileSize / 2;
+      const centerY = powerUp.y * tileSize + tileSize / 2;
 
-      for (let start = -width; start < width * 2; start += width) {
-        ctx.beginPath();
-        ctx.moveTo(start - offset, baseY);
-
-        ctx.lineTo(start + 120 - offset, baseY - 80);
-        ctx.lineTo(start + 250 - offset, baseY);
-        ctx.lineTo(start + 410 - offset, baseY - 125);
-        ctx.lineTo(start + 610 - offset, baseY);
-        ctx.lineTo(start + 780 - offset, baseY - 95);
-        ctx.lineTo(start + 1000 - offset, baseY);
-
-        ctx.lineTo(start + width - offset, baseY + 200);
-        ctx.lineTo(start - offset, baseY + 200);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1;
-    }
-
-    function drawPlayer() {
-      const x = player.x;
-      const y = player.y;
-
-      ctx.fillStyle = "#c9d8a6";
-      roundedRect(x, y + 12, player.width, player.height - 12, 14);
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(160, 190, 160, 0.16)";
       ctx.fill();
 
-      ctx.fillStyle = "#6d7f45";
-      roundedRect(x - 13, y + 25, 18, 32, 8);
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 22, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(160, 190, 160, 0.24)";
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 9, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(215, 181, 109, 0.18)";
+      ctx.fill();
+
+      ctx.fillStyle = "#a8c7a1";
+      ctx.font = "27px serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(powerUp.symbol, centerX, centerY + 1);
+    });
+  }
+
+  function drawGate() {
+    if (!isVisible(gate.x, gate.y)) return;
+
+    const allRunesCollected = runes.every((rune) => rune.collected);
+
+    ctx.fillStyle = allRunesCollected ? "#d7b56d" : "#3b2f1f";
+    ctx.fillRect(gate.x * tileSize + 6, gate.y * tileSize + 4, 28, 32);
+
+    ctx.fillStyle = allRunesCollected ? "#101510" : "#d7b56d";
+    ctx.font = "20px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("ᛉ", gate.x * tileSize + 20, gate.y * tileSize + 21);
+  }
+
+  function drawEnemies() {
+    enemies.forEach((enemy) => {
+      if (!isVisible(enemy.x, enemy.y)) return;
+
+      const centerX = enemy.x * tileSize + tileSize / 2;
+      const centerY = enemy.y * tileSize + tileSize / 2;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 13, 0, Math.PI * 2);
+      ctx.fillStyle = "#7b1e1e";
       ctx.fill();
 
       ctx.fillStyle = "#f5f1e8";
-      ctx.beginPath();
-      ctx.arc(x + 26, y + 10, 17, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#172117";
-      ctx.fillRect(x + 8, y - 3, 36, 8);
-      ctx.fillRect(x + 15, y - 12, 22, 12);
-
-      const step = Math.sin(frame * 0.25) * 8;
-      ctx.strokeStyle = "#f5f1e8";
-      ctx.lineWidth = 6;
-      ctx.lineCap = "round";
-
-      ctx.beginPath();
-      ctx.moveTo(x + 18, y + player.height - 8);
-      ctx.lineTo(x + 10 + step, y + player.height + 12);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(x + 34, y + player.height - 8);
-      ctx.lineTo(x + 42 - step, y + player.height + 12);
-      ctx.stroke();
-    }
-
-    function drawObstacle(obstacle) {
-      if (obstacle.type === "rock") {
-        ctx.fillStyle = "#7d8068";
-        ctx.beginPath();
-        ctx.moveTo(obstacle.x, obstacle.y + obstacle.height);
-        ctx.lineTo(obstacle.x + 12, obstacle.y + 6);
-        ctx.lineTo(obstacle.x + 34, obstacle.y);
-        ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      if (obstacle.type === "log") {
-        ctx.fillStyle = "#6f4c2d";
-        roundedRect(obstacle.x, obstacle.y + 8, obstacle.width, 20, 10);
-        ctx.fill();
-
-        ctx.fillStyle = "#9b7447";
-        ctx.beginPath();
-        ctx.arc(
-          obstacle.x + obstacle.width - 8,
-          obstacle.y + 18,
-          10,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      }
-
-      if (obstacle.type === "marker") {
-        ctx.fillStyle = "#c9d8a6";
-        roundedRect(obstacle.x + 9, obstacle.y, 10, obstacle.height, 4);
-        ctx.fill();
-
-        ctx.fillStyle = "#f5f1e8";
-        roundedRect(obstacle.x, obstacle.y + 4, obstacle.width, 18, 5);
-        ctx.fill();
-      }
-
-      if (obstacle.type === "grass") {
-        ctx.strokeStyle = "#c9d8a6";
-        ctx.lineWidth = 4;
-        ctx.lineCap = "round";
-
-        for (let i = 0; i < 5; i++) {
-          const bladeX = obstacle.x + i * 8;
-          ctx.beginPath();
-          ctx.moveTo(bladeX, obstacle.y + obstacle.height);
-          ctx.quadraticCurveTo(
-            bladeX + 8,
-            obstacle.y + obstacle.height / 2,
-            bladeX + 2,
-            obstacle.y
-          );
-          ctx.stroke();
-        }
-      }
-
-      if (obstacle.type === "crate") {
-        ctx.fillStyle = "#8b6a3f";
-        roundedRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height, 8);
-        ctx.fill();
-
-        ctx.strokeStyle = "rgba(245, 241, 232, 0.35)";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(obstacle.x + 8, obstacle.y + 8);
-        ctx.lineTo(obstacle.x + obstacle.width - 8, obstacle.y + obstacle.height - 8);
-        ctx.moveTo(obstacle.x + obstacle.width - 8, obstacle.y + 8);
-        ctx.lineTo(obstacle.x + 8, obstacle.y + obstacle.height - 8);
-        ctx.stroke();
-      }
-    }
-
-    function drawParticles() {
-      particles.forEach((p) => {
-        ctx.globalAlpha = Math.max(p.life / 28, 0);
-        ctx.fillStyle = "#c9d8a6";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      });
-    }
-
-    function update() {
-      if (!running || gameOver) return;
-
-      frame++;
-      score += 1;
-      speed += 0.002;
-
-      scoreEl.textContent = getCurrentScore();
-
-      player.velocityY += 0.85;
-      player.y += player.velocityY;
-
-      if (player.y >= 295) {
-        player.y = 295;
-        player.velocityY = 0;
-        player.grounded = true;
-      }
-
-      if (frame >= nextObstacleFrame) {
-        spawnObstacle();
-        scheduleNextObstacle();
-      }
-
-      obstacles.forEach((obstacle) => {
-        obstacle.x -= speed;
-      });
-
-      obstacles = obstacles.filter((obstacle) => obstacle.x + obstacle.width > -50);
-
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 1;
-      });
-
-      particles = particles.filter((p) => p.life > 0);
-
-      checkCollision();
-    }
-
-    function checkCollision() {
-      for (const obstacle of obstacles) {
-        const padding = 10;
-
-        const hit =
-          player.x + padding < obstacle.x + obstacle.width &&
-          player.x + player.width - padding > obstacle.x &&
-          player.y + padding < obstacle.y + obstacle.height &&
-          player.y + player.height - padding > obstacle.y;
-
-        if (hit) {
-          endGame();
-        }
-      }
-    }
-
-    function endGame() {
-      gameOver = true;
-      running = false;
-
-      const finalScore = getCurrentScore();
-
-      if (finalScore > best) {
-        best = finalScore;
-        localStorage.setItem("makeaway-best-score", best);
-        bestEl.textContent = best;
-      }
-
-      messageEl.innerHTML = `
-        <strong>Trail ended</strong>
-        <span>You made it ${finalScore} steps out. Tap to run again.</span>
-      `;
-      messageEl.classList.add("show");
-    }
-
-    function roundedRect(x, y, w, h, r) {
-      ctx.beginPath();
-
-      if (ctx.roundRect) {
-        ctx.roundRect(x, y, w, h, r);
-      } else {
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-      }
-    }
-
-    function draw() {
-      drawBackground();
-
-      obstacles.forEach(drawObstacle);
-      drawParticles();
-      drawPlayer();
-
-      if (!running && !gameOver) {
-        messageEl.classList.add("show");
-      }
-
-      update();
-      requestAnimationFrame(draw);
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-
-    window.addEventListener("keydown", (event) => {
-      if (event.code === "Space" || event.code === "ArrowUp") {
-        event.preventDefault();
-        jump();
-      }
+      ctx.font = "18px serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("ᛜ", centerX, centerY + 1);
     });
-
-    canvas.addEventListener("pointerdown", jump);
-    messageEl.addEventListener("pointerdown", jump);
-
-    resizeCanvas();
-    draw();
-  </script>
-</BaseLayout>
-
-<style>
-  .back-link {
-    display: inline-block;
-    margin-bottom: 48px;
-    color: var(--text-muted);
-    font-weight: 800;
-    text-decoration: none;
   }
 
-  .back-link:hover {
-    color: var(--text-main);
+  function drawPlayer() {
+    const centerX = player.x * tileSize + tileSize / 2;
+    const centerY = player.y * tileSize + tileSize / 2;
+
+    if (guardActive) {
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 18, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(168, 199, 161, 0.8)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    if (ruptureActive) {
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 21, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(215, 181, 109, 0.55)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 12, 0, Math.PI * 2);
+    ctx.fillStyle = "#f5f1e8";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "#172117";
+    ctx.fill();
+  }
+
+  function drawEndOverlay() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.72)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = gameWon ? "#d7b56d" : "#f5f1e8";
+    ctx.font = "bold 44px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(gameWon ? "YOU MADE A WAY" : "THE GRID WON", 320, 290);
+
+    ctx.fillStyle = "#f5f1e8";
+    ctx.font = "20px sans-serif";
+    ctx.fillText(`Final Score: ${score}`, 320, 340);
+    ctx.fillText("Press Restart Game to play again", 320, 380);
+  }
+
+  function canMoveTo(x, y) {
+    if (y < 0 || y >= map.length) return false;
+    if (x < 0 || x >= map[y].length) return false;
+    return map[y][x] !== "#";
+  }
+
+  function movePlayer(dx, dy) {
+    if (gameWon || gameLost) return;
+
+    const nextX = player.x + dx;
+    const nextY = player.y + dy;
+
+    if (nextY < 0 || nextY >= map.length || nextX < 0 || nextX >= map[nextY].length) {
+      return;
+    }
+
+    if (map[nextY][nextX] === "#") {
+      if (ruptureActive) {
+        map[nextY][nextX] = ".";
+        ruptureActive = false;
+        score += 50;
+        storyText.textContent =
+          "The Rupture Rune burns through the wall. Sometimes you do not find a path. You make one.";
+        updateStats();
+        drawGame();
+      }
+
+      return;
+    }
+
+    player.x = nextX;
+    player.y = nextY;
+    moveCount += 1;
+
+    score += momentumMoves > 0 ? 8 : 3;
+
+    if (momentumMoves > 0) {
+      momentumMoves -= 1;
+    }
+
+    checkRuneCollection();
+    checkPowerUpCollection();
+    checkGate();
+    checkEnemyCollision();
+
+    enemyMoveCounter += 1;
+
+    if (enemyMoveCounter >= 2) {
+      enemyMoveCounter = 0;
+      moveEnemies();
+      checkEnemyCollision();
+    }
+
+    updateStats();
+    drawGame();
+  }
+
+  function checkRuneCollection() {
+    runes.forEach((rune) => {
+      if (!rune.collected && rune.x === player.x && rune.y === player.y) {
+        rune.collected = true;
+        score += 150;
+        storyText.textContent = rune.message;
+
+        const collectedCount = runes.filter((r) => r.collected).length;
+
+        if (collectedCount === totalRunes) {
+          score += 250;
+          gameStatus.textContent = "Freedom Gate unlocked";
+          storyText.textContent =
+            "The final rune burns in your hand. The gate ahead begins to open. For the first time, the path does not loop back.";
+        }
+      }
+    });
+  }
+
+  function checkPowerUpCollection() {
+    powerUps.forEach((powerUp) => {
+      if (!powerUp.collected && powerUp.x === player.x && powerUp.y === player.y) {
+        powerUp.collected = true;
+        score += 75;
+        storyText.textContent = powerUp.message;
+
+        if (powerUp.type === "clarity") {
+          fogRadius = 8;
+          gameStatus.textContent = "Clarity Rune active";
+        }
+
+        if (powerUp.type === "guard") {
+          guardActive = true;
+          gameStatus.textContent = "Guard Rune active";
+        }
+
+        if (powerUp.type === "momentum") {
+          momentumMoves = 12;
+          gameStatus.textContent = "Momentum Rune active";
+        }
+
+        if (powerUp.type === "rupture") {
+          ruptureActive = true;
+          gameStatus.textContent = "Rupture Rune ready";
+        }
+      }
+    });
+  }
+
+  function checkGate() {
+    const allRunesCollected = runes.every((rune) => rune.collected);
+
+    if (player.x === gate.x && player.y === gate.y) {
+      if (allRunesCollected) {
+        winGame();
+      } else {
+        storyText.textContent =
+          "The Freedom Gate is sealed. The runes are still scattered through the maze.";
+      }
+    }
+  }
+
+  function moveEnemies() {
+    enemies.forEach((enemy) => {
+      const possibleMoves = [
+        { dx: 0, dy: -1 },
+        { dx: 0, dy: 1 },
+        { dx: -1, dy: 0 },
+        { dx: 1, dy: 0 },
+      ];
+
+      possibleMoves.sort(() => Math.random() - 0.5);
+
+      let bestMove = null;
+      let bestDistance = Infinity;
+
+      possibleMoves.forEach((move) => {
+        const nextX = enemy.x + move.dx;
+        const nextY = enemy.y + move.dy;
+
+        if (!canMoveTo(nextX, nextY)) return;
+
+        const distance = Math.abs(player.x - nextX) + Math.abs(player.y - nextY);
+
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestMove = move;
+        }
+      });
+
+      if (bestMove) {
+        enemy.x += bestMove.dx;
+        enemy.y += bestMove.dy;
+      }
+    });
+  }
+
+  function checkEnemyCollision() {
+    enemies.forEach((enemy) => {
+      if (enemy.x === player.x && enemy.y === player.y) {
+        if (guardActive) {
+          guardActive = false;
+          score += 50;
+          storyText.textContent =
+            "The Guard Rune shatters and turns the Warden back. Keep moving.";
+          resetPlayerPosition();
+          return;
+        }
+
+        lives -= 1;
+        score = Math.max(0, score - 100);
+        storyText.textContent = enemy.message;
+
+        if (lives <= 0) {
+          loseGame("The Wardens dragged you back into the loop.");
+        } else {
+          resetPlayerPosition();
+          gameStatus.textContent = "You were caught";
+        }
+      }
+    });
+  }
+
+  function resetPlayerPosition() {
+    player.x = 1;
+    player.y = 1;
+  }
+
+  function winGame() {
+    gameWon = true;
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+
+    score += timeLeft * 10;
+    score += lives * 100;
+
+    gameStatus.textContent = "You escaped";
+    storyText.textContent =
+      "You step through the Freedom Gate. Behind you, The Grid fades into darkness. Ahead of you is open land, open sky, and a road you choose for yourself. You made a way.";
+
+    updateStats();
+    drawGame();
+  }
+
+  function loseGame(message) {
+    gameLost = true;
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+
+    gameStatus.textContent = "Game over";
+    storyText.textContent = message;
+
+    updateStats();
+    drawGame();
+  }
+
+  document.addEventListener("keydown", (event) => {
+    const key = event.key.toLowerCase();
+
+    if (
+      ["arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"].includes(
+        key
+      )
+    ) {
+      event.preventDefault();
+    }
+
+    if (key === "arrowup" || key === "w") {
+      movePlayer(0, -1);
+    }
+
+    if (key === "arrowdown" || key === "s") {
+      movePlayer(0, 1);
+    }
+
+    if (key === "arrowleft" || key === "a") {
+      movePlayer(-1, 0);
+    }
+
+    if (key === "arrowright" || key === "d") {
+      movePlayer(1, 0);
+    }
+  });
+
+  restartButton.addEventListener("click", resetGame);
+
+  resetGame();
+</script>
+
+<style>
+  .game-page {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+  }
+
+  .game-header {
+    margin-bottom: 2rem;
   }
 
   .eyebrow {
-    margin: 0 0 12px;
-    color: var(--text-muted);
+    margin: 0 0 0.5rem;
+    color: #d7b56d;
     font-size: 0.85rem;
-    font-weight: 900;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  .game-shell {
-    position: relative;
-    overflow: hidden;
-    margin-top: 48px;
-    border: 1px solid var(--card-border);
-    border-radius: 28px;
-    background: var(--card);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-  }
-
-  .hud {
-    position: absolute;
-    z-index: 5;
-    top: 18px;
-    left: 18px;
-    right: 18px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: start;
-    gap: 12px;
-    pointer-events: none;
-  }
-
-  .hud-box {
-    border: 1px solid rgba(245, 241, 232, 0.16);
-    border-radius: 18px;
-    padding: 10px 14px;
-    background: rgba(5, 5, 5, 0.58);
-    backdrop-filter: blur(10px);
-  }
-
-  .hud-box span {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
-  .hud-box strong {
-    display: block;
-    margin-top: 2px;
-    color: var(--text-main);
-    font-size: 1.4rem;
+  h1 {
+    margin: 0;
+    color: #f5f1e8;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
   }
 
-  .stage-pill {
-    justify-self: center;
-    min-width: 220px;
-    text-align: center;
+  .game-header p {
+    max-width: 760px;
+    margin-top: 1rem;
+    color: #d8d2c3;
+    font-size: 1.1rem;
+    line-height: 1.7;
   }
 
-  .stage-pill small {
-    display: block;
-    margin-top: 3px;
-    color: var(--text-main);
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: normal;
-    text-transform: none;
+  .game-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(280px, 390px);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .game-panel,
+  .story-panel {
+    border: 1px solid rgba(245, 241, 232, 0.14);
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  .game-panel {
+    overflow: hidden;
+    max-width: 560px;
   }
 
   canvas {
     display: block;
     width: 100%;
-    height: min(58vw, 420px);
-    min-height: 300px;
-    touch-action: manipulation;
-    cursor: pointer;
+    height: auto;
+    background: #020302;
   }
 
-  .game-message {
-    position: absolute;
-    inset: 0;
-    z-index: 6;
-    display: none;
-    place-items: center;
-    padding: 24px;
-    text-align: center;
-    background: rgba(5, 5, 5, 0.5);
-    backdrop-filter: blur(4px);
-    cursor: pointer;
+  .story-panel {
+    padding: 1.5rem;
   }
 
-  .game-message.show {
+  .story-panel h2,
+  .story-panel h3 {
+    margin: 0 0 0.75rem;
+    color: #f5f1e8;
+  }
+
+  .story-panel p {
+    color: #d8d2c3;
+    line-height: 1.7;
+  }
+
+  .stats-grid {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
   }
 
-  .game-message strong {
+  .stats-grid div {
+    padding: 0.85rem;
+    border: 1px solid rgba(245, 241, 232, 0.12);
+    border-radius: 0.85rem;
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .stats-grid span {
     display: block;
-    color: var(--text-main);
-    font-size: clamp(2rem, 5vw, 4rem);
-    letter-spacing: -0.05em;
+    color: #a9a291;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .game-message span {
+  .stats-grid strong {
     display: block;
-    margin-top: 12px;
-    color: var(--text-muted);
-    font-size: 1.1rem;
+    margin-top: 0.25rem;
+    color: #d7b56d;
+    font-size: 1.35rem;
   }
 
-  .hint {
-    margin: 18px 0 0;
-    color: var(--text-muted);
-    text-align: center;
+  .stats-grid strong span {
+    display: inline;
+    color: inherit;
+    font-size: inherit;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
-  @media (max-width: 700px) {
-    .game-shell {
-      border-radius: 22px;
+  .status-box {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(245, 241, 232, 0.12);
+  }
+
+  .status-box p {
+    margin: 0.5rem 0;
+  }
+
+  .controls {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(245, 241, 232, 0.12);
+  }
+
+  button {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(215, 181, 109, 0.6);
+    border-radius: 999px;
+    background: rgba(215, 181, 109, 0.12);
+    color: #f5f1e8;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  button:hover {
+    background: rgba(215, 181, 109, 0.22);
+  }
+
+  @media (max-width: 950px) {
+    .game-layout {
+      grid-template-columns: 1fr;
     }
 
-    .hud {
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      gap: 8px;
+    .game-panel {
+      max-width: 640px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .game-page {
+      padding: 2.5rem 0;
     }
 
-    .hud-box {
-      padding: 8px 10px;
-      border-radius: 14px;
+    .story-panel {
+      padding: 1.2rem;
     }
 
-    .stage-pill {
-      min-width: 0;
-    }
-
-    .stage-pill small {
-      display: none;
-    }
-
-    canvas {
-      min-height: 360px;
+    .stats-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

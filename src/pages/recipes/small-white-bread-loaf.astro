@@ -1,0 +1,178 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Small White Bread Loaf">
+  <main class="recipe-page">
+    <section class="recipe-hero">
+      <p class="eyebrow">Simple Bread Recipe</p>
+      <h1>Small White Bread Loaf</h1>
+      <p class="intro">
+        A simple homemade white bread loaf made with flour, salt, yeast, and water.
+        This is a small loaf recipe that is easy to mix, knead by hand, and bake.
+      </p>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Ingredients</h2>
+
+      <ul class="ingredients-list">
+        <li><span>300g</span> white flour</li>
+        <li><span>4g</span> salt</li>
+        <li><span>3g</span> dry yeast</li>
+        <li><span>200g</span> water</li>
+      </ul>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Instructions</h2>
+
+      <ol class="steps-list">
+        <li>
+          Combine the dry ingredients in a bowl: white flour, salt, and dry yeast.
+        </li>
+
+        <li>
+          Add the water and mix everything together until a dough forms.
+        </li>
+
+        <li>
+          Let the dough rest for 10 minutes.
+        </li>
+
+        <li>
+          Knead the dough by hand for 15 seconds.
+        </li>
+
+        <li>
+          Let the dough rest for another 10 minutes.
+        </li>
+
+        <li>
+          Repeat the 15-second knead and 10-minute rest process 3 more times.
+        </li>
+
+        <li>
+          After the final knead, let the dough sit for 1 hour so it can rise.
+        </li>
+
+        <li>
+          After 1 hour, preheat the oven to 475°F, or as high as your oven will go.
+        </li>
+
+        <li>
+          Grease a small bread pan.
+        </li>
+
+        <li>
+          Shape the dough into a loaf and place it into the greased pan.
+        </li>
+
+        <li>
+          Bake for 45 minutes, or until the loaf is golden brown.
+        </li>
+
+        <li>
+          Let the bread cool before slicing.
+        </li>
+      </ol>
+    </section>
+
+    <section class="recipe-note">
+      <h2>Notes</h2>
+      <p>
+        This is a basic small white bread loaf. The outside should become golden brown,
+        and the loaf should sound slightly hollow when tapped after baking.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .recipe-page {
+    width: min(900px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+  }
+
+  .recipe-hero {
+    margin-bottom: 2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    color: #d7b56d;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 1;
+  }
+
+  .intro {
+    max-width: 680px;
+    margin-top: 1rem;
+    color: #d8d2c3;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .recipe-card,
+  .recipe-note {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(245, 241, 232, 0.14);
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .ingredients-list,
+  .steps-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #eee7d8;
+    line-height: 1.8;
+  }
+
+  .ingredients-list li {
+    margin-bottom: 0.35rem;
+  }
+
+  .ingredients-list span {
+    display: inline-block;
+    min-width: 60px;
+    color: #d7b56d;
+    font-weight: 700;
+  }
+
+  .steps-list li {
+    margin-bottom: 0.75rem;
+  }
+
+  .recipe-note p {
+    margin: 0;
+    color: #d8d2c3;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    .recipe-page {
+      padding: 2.5rem 0;
+    }
+
+    .recipe-card,
+    .recipe-note {
+      padding: 1.2rem;
+    }
+  }
+</style>
