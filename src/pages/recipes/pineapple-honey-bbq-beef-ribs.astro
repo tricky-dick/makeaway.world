@@ -1,0 +1,282 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Pineapple Honey BBQ Beef Ribs">
+  <main class="recipe-page">
+    <a class="back-link" href="/recipes/">← Back to Recipes</a>
+
+    <section class="recipe-hero">
+      <p class="eyebrow">Oven or Grill Recipe</p>
+      <h1>Pineapple Honey BBQ Beef Ribs</h1>
+      <p class="intro">
+        Tender beef ribs marinated with pineapple and finished with a sticky
+        honey BBQ glaze. Make them low and slow in the oven or on the grill.
+      </p>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Ingredients</h2>
+
+      <ul class="ingredients-list">
+        <li><span>1–2 racks</span> beef ribs</li>
+        <li><span>1 jar</span> pineapple chunks or crushed pineapple with juice</li>
+        <li><span>1 bottle</span> Sweet Baby Ray’s Honey BBQ Sauce</li>
+        <li><span>As needed</span> yellow mustard</li>
+        <li><span>1 tbsp</span> salt</li>
+        <li><span>1 tbsp</span> black pepper</li>
+        <li><span>1 tbsp</span> garlic powder</li>
+        <li><span>1 tbsp</span> onion powder</li>
+        <li><span>1 tsp</span> smoked paprika</li>
+        <li><span>Optional</span> brown sugar</li>
+        <li><span>Optional</span> cayenne pepper</li>
+        <li><span>Optional</span> Worcestershire sauce</li>
+      </ul>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Prep the Ribs</h2>
+
+      <ol class="steps-list">
+        <li>
+          Flip the ribs bone-side up.
+        </li>
+
+        <li>
+          Use a butter knife to loosen the thin silver membrane on the back of
+          the ribs.
+        </li>
+
+        <li>
+          Grab the membrane with a paper towel and pull it off completely.
+        </li>
+
+        <li>
+          Lightly coat both sides of the ribs with yellow mustard.
+        </li>
+
+        <li>
+          Season both sides with salt, black pepper, garlic powder, onion powder,
+          and smoked paprika.
+        </li>
+
+        <li>
+          Optional: add brown sugar and a pinch of cayenne for extra sweetness
+          and heat.
+        </li>
+      </ol>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Pineapple Marinade</h2>
+
+      <ol class="steps-list">
+        <li>
+          Mix half the jar of pineapple with juice and 2–3 tablespoons of honey
+          BBQ sauce.
+        </li>
+
+        <li>
+          Pour the pineapple marinade over the ribs.
+        </li>
+
+        <li>
+          Marinate for at least 2 hours. Overnight is best.
+        </li>
+      </ol>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Oven Method</h2>
+
+      <ol class="steps-list">
+        <li>
+          Preheat the oven to 300°F.
+        </li>
+
+        <li>
+          Place the ribs on a foil-lined baking tray.
+        </li>
+
+        <li>
+          Add a little pineapple juice to the tray.
+        </li>
+
+        <li>
+          Cover the ribs tightly with foil.
+        </li>
+
+        <li>
+          Bake for 2.5 to 3.5 hours, or until tender.
+        </li>
+
+        <li>
+          Remove the foil.
+        </li>
+
+        <li>
+          Brush the ribs heavily with Sweet Baby Ray’s Honey BBQ Sauce and a
+          little pineapple juice.
+        </li>
+
+        <li>
+          Broil for 3–5 minutes, until sticky and caramelized.
+        </li>
+
+        <li>
+          Optional: add pineapple chunks during the last 10 minutes.
+        </li>
+      </ol>
+    </section>
+
+    <section class="recipe-card">
+      <h2>Grill Method</h2>
+
+      <ol class="steps-list">
+        <li>
+          Set the grill for indirect heat around 275–300°F.
+        </li>
+
+        <li>
+          Place the ribs away from the direct flame.
+        </li>
+
+        <li>
+          Cook with the lid closed for 2.5 to 3 hours.
+        </li>
+
+        <li>
+          Every 30–40 minutes, baste the ribs with a mixture of BBQ sauce and
+          pineapple juice.
+        </li>
+
+        <li>
+          Move the ribs over direct heat for 2–4 minutes per side.
+        </li>
+
+        <li>
+          Let the ribs caramelize and get a slight char, but watch carefully so
+          the sugars do not burn.
+        </li>
+      </ol>
+    </section>
+
+    <section class="recipe-note">
+      <h2>Notes</h2>
+      <p>
+        Beef ribs are best around 200–205°F internal temperature. The meat should
+        pull back from the bones. Let the ribs rest for 10–15 minutes before
+        slicing. Do not marinate in pineapple longer than 24 hours, or the meat
+        can become mushy.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .recipe-page {
+    width: min(900px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 2rem;
+    color: #d7b56d;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: #f5f1e8;
+  }
+
+  .recipe-hero {
+    margin-bottom: 2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    color: #d7b56d;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 1;
+  }
+
+  .intro {
+    max-width: 680px;
+    margin-top: 1rem;
+    color: #d8d2c3;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .recipe-card,
+  .recipe-note {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(245, 241, 232, 0.14);
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .ingredients-list,
+  .steps-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #eee7d8;
+    line-height: 1.8;
+  }
+
+  .ingredients-list li {
+    margin-bottom: 0.35rem;
+  }
+
+  .ingredients-list span {
+    display: inline-block;
+    min-width: 95px;
+    color: #d7b56d;
+    font-weight: 700;
+  }
+
+  .steps-list li {
+    margin-bottom: 0.75rem;
+  }
+
+  .recipe-note p {
+    margin: 0;
+    color: #d8d2c3;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    .recipe-page {
+      padding: 2.5rem 0;
+    }
+
+    .recipe-card,
+    .recipe-note {
+      padding: 1.2rem;
+    }
+
+    .ingredients-list span {
+      display: block;
+      min-width: 0;
+    }
+  }
+</style>
