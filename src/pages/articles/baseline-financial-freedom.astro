@@ -1,0 +1,125 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Baseline Financial Freedom | Makeaway"
+  description="A short money article about building a basic level of financial freedom through control, savings, debt reduction, and practical habits."
+>
+  <main class="article-page">
+    <a class="back-link" href="/money/">← Back to Money</a>
+
+    <article class="article">
+      <p class="eyebrow">Makeaway / Money</p>
+
+      <h1>Baseline Financial Freedom</h1>
+
+      <p class="intro">
+        Financial freedom does not have to start with being rich. It starts with
+        getting control.
+      </p>
+
+      <p>
+        A lot of people think financial freedom means never working again. That
+        may be the long-term dream, but the first level is much simpler: having
+        enough control over your money that every problem does not become a
+        crisis.
+      </p>
+
+      <p>
+        Baseline financial freedom means building space between you and panic.
+        It means having some savings, lowering bad debt, understanding where your
+        money goes, and creating options for yourself.
+      </p>
+
+      <p>
+        The goal is not to look rich. The goal is to become harder to trap.
+      </p>
+
+      <p>
+        That can start small. Cook at home more. Cancel things you do not use.
+        Pay down one balance. Build an emergency fund. Learn a skill that can
+        make money. Invest slowly and consistently. Stop letting convenience
+        drain your future.
+      </p>
+
+      <p>
+        Money is not the whole path, but it is part of the path. The more control
+        you have over your money, the more room you have to make better choices.
+      </p>
+
+      <p>
+        Baseline financial freedom is not about luxury. It is about stability.
+        It is about breathing room. It is about creating enough margin to stop
+        living completely at the mercy of the next bill, the next emergency, or
+        the next bad job.
+      </p>
+
+      <p>
+        Start there. Build the base. Then keep going.
+      </p>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .article-page {
+    width: min(900px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 48px;
+    color: var(--text-muted);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--text-main);
+  }
+
+  .eyebrow {
+    margin: 0 0 14px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  .intro {
+    max-width: 760px;
+    margin-top: 1.25rem;
+    color: var(--text-main);
+    font-size: 1.35rem;
+    line-height: 1.6;
+  }
+
+  .article p {
+    max-width: 760px;
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    line-height: 1.75;
+  }
+
+  .article p + p {
+    margin-top: 1.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .article-page {
+      padding: 2.5rem 0;
+    }
+  }
+</style>
