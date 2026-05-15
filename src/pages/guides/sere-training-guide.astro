@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="SERE Training Guide | Makeaway"
+  description="A public Air Force SERE operations handbook linked as a survival and self-reliance reference."
+>
+  <main class="guide-page">
+    <a class="back-link" href="/guides/">← Back to Guides</a>
+
+    <section class="guide-hero">
+      <p class="eyebrow">Makeaway / Guides</p>
+
+      <h1>SERE Training Guide</h1>
+
+      <p class="intro">
+        A public Air Force survival, evasion, resistance, and escape operations
+        handbook. This guide covers survival mindset, shelter, firecraft, water,
+        food, land navigation, signaling, recovery, and other field survival topics.
+      </p>
+
+      <div class="button-row">
+        <a
+          class="primary-button"
+          href="https://static.e-publishing.af.mil/production/1/af_a3/publication/afh10-644/afh10-644.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Official PDF
+        </a>
+
+        <a
+          class="secondary-button"
+          href="https://static.e-publishing.af.mil/production/1/af_a3/publication/afh10-644/afh10-644.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Source
+        </a>
+      </div>
+    </section>
+
+    <section class="guide-card">
+      <h2>What’s inside</h2>
+
+      <ul>
+        <li>Survival mindset and decision making</li>
+        <li>Personal protection, shelter, fire, water, and food</li>
+        <li>Weather, terrain, and environmental survival conditions</li>
+        <li>Land navigation and travel</li>
+        <li>Signaling, communication, and recovery basics</li>
+      </ul>
+    </section>
+
+    <section class="guide-note">
+      <h2>Note</h2>
+      <p>
+        This page links to the official Air Force-hosted PDF instead of hosting
+        the file directly. Use it as educational reference material, not as a
+        replacement for professional training, medical advice, or legal guidance.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .guide-page {
+    width: min(900px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 48px;
+    color: var(--text-muted);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--text-main);
+  }
+
+  .guide-hero {
+    margin-bottom: 2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 14px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  .intro {
+    max-width: 720px;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+
+  .primary-button,
+  .secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.85rem 1.15rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .primary-button {
+    border: 1px solid rgba(215, 181, 109, 0.7);
+    background: rgba(215, 181, 109, 0.16);
+    color: #f5f1e8;
+  }
+
+  .primary-button:hover {
+    background: rgba(215, 181, 109, 0.26);
+    transform: translateY(-2px);
+  }
+
+  .secondary-button {
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    color: var(--text-main);
+  }
+
+  .secondary-button:hover {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+  }
+
+  .guide-card,
+  .guide-note {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--card-border);
+    border-radius: 1.25rem;
+    background: var(--card);
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    color: var(--text-main);
+    font-size: 1.5rem;
+  }
+
+  .guide-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .guide-note p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    .guide-page {
+      padding: 2.5rem 0;
+    }
+
+    .guide-card,
+    .guide-note {
+      padding: 1.2rem;
+    }
+  }
+</style>
