@@ -1,0 +1,989 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Land Scout">
+  <main class="page-shell">
+    <section class="hero-card">
+      <p class="eyebrow">Makeaway Tool</p>
+
+      <h1>Land Scout</h1>
+
+      <p class="intro">
+        Paste a rural land listing URL and score it for homestead, self-reliance,
+        and family-compound potential.
+      </p>
+
+      <div class="url-box">
+        <label for="listingUrl">Land listing URL</label>
+        <input
+          id="listingUrl"
+          type="url"
+          placeholder="https://example.com/land-listing"
+          autocomplete="off"
+        />
+
+        <div class="button-row">
+          <button id="analyzeBtn" type="button">Analyze Land</button>
+          <button id="resetBtn" type="button" class="secondary">Reset</button>
+        </div>
+
+        <p id="analyzeStatus" class="status-text"></p>
+      </div>
+    </section>
+
+    <section id="detailsSection" class="details-card hidden">
+      <h2>Property Details</h2>
+
+      <p class="small-note">
+        Land Scout will try to pull basic details from the listing URL. Review the
+        fields below before trusting the score.
+      </p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="price">Price</label>
+          <input id="price" type="number" min="0" placeholder="185000" />
+        </div>
+
+        <div class="field">
+          <label for="acres">Acres</label>
+          <input id="acres" type="number" min="0" step="0.1" placeholder="25" />
+        </div>
+
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state">
+            <option value="">Select</option>
+            <option value="GA">Georgia</option>
+            <option value="FL">Florida</option>
+            <option value="AL">Alabama</option>
+            <option value="TN">Tennessee</option>
+            <option value="SC">South Carolina</option>
+            <option value="NC">North Carolina</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="county">County</label>
+          <input id="county" type="text" placeholder="Camden" />
+        </div>
+
+        <div class="field">
+          <label for="roadAccess">Road access</label>
+          <select id="roadAccess">
+            <option value="unknown">Unknown</option>
+            <option value="yes">Confirmed</option>
+            <option value="maybe">Looks possible</option>
+            <option value="no">No / landlocked risk</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="multipleHomes">Multiple homes allowed?</label>
+          <select id="multipleHomes">
+            <option value="unknown">Unknown</option>
+            <option value="yes">Confirmed</option>
+            <option value="maybe">Possibly</option>
+            <option value="no">Likely no</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="septicWater">Septic / water potential</label>
+          <select id="septicWater">
+            <option value="unknown">Unknown</option>
+            <option value="yes">Looks good</option>
+            <option value="maybe">Needs research</option>
+            <option value="no">Major concern</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="floodWetlands">Flood / wetlands risk</label>
+          <select id="floodWetlands">
+            <option value="unknown">Unknown</option>
+            <option value="low">Low / no obvious issue</option>
+            <option value="medium">Needs research</option>
+            <option value="high">High risk</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="utilities">Utilities</label>
+          <select id="utilities">
+            <option value="unknown">Unknown</option>
+            <option value="yes">Power nearby / available</option>
+            <option value="maybe">Possible</option>
+            <option value="no">No obvious utilities</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="selfReliance">Self-reliance potential</label>
+          <select id="selfReliance">
+            <option value="unknown">Unknown</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="scoreBtn" type="button" class="full-width">Score This Land</button>
+    </section>
+
+    <section id="resultSection" class="result-card hidden">
+      <p class="eyebrow">Land Scout Result</p>
+
+      <div class="score-wrap">
+        <div>
+          <h2 id="scoreText">Score: 0 / 100</h2>
+          <p id="confidenceText" class="confidence">Confidence: Low</p>
+        </div>
+
+        <div id="scoreBadge" class="score-badge">0</div>
+      </div>
+
+      <div class="result-block">
+        <h3>Verdict</h3>
+        <p id="verdictText"></p>
+      </div>
+
+      <div class="result-block">
+        <h3>Property Snapshot</h3>
+        <ul id="snapshotList"></ul>
+      </div>
+
+      <div class="result-block">
+        <h3>Strengths</h3>
+        <ul id="strengthList"></ul>
+      </div>
+
+      <div class="result-block">
+        <h3>Red Flags / Research Needed</h3>
+        <ul id="warningList"></ul>
+      </div>
+
+      <div class="button-row">
+        <a id="openListingBtn" href="#" target="_blank" rel="noopener noreferrer">
+          Open Listing
+        </a>
+        <button id="resetBtnBottom" type="button" class="secondary">Reset</button>
+      </div>
+    </section>
+
+    <section class="criteria-card">
+      <h2>How We Rank Land</h2>
+
+      <p>
+        This tool scores land for a self-sufficient homestead and family-compound
+        setup. The goal is to quickly spot properties worth deeper research.
+      </p>
+
+      <div class="criteria-grid">
+        <div class="criteria-item">
+          <strong>Acreage fit</strong>
+          <span>15 points</span>
+          <p>Enough room for homes, privacy, gardens, animals, solar, and expansion.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Price per acre</strong>
+          <span>15 points</span>
+          <p>Rewards land that is not badly overpriced for the amount of acreage.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Total budget fit</strong>
+          <span>10 points</span>
+          <p>Looks at whether the total purchase price is within a realistic range.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Road access</strong>
+          <span>10 points</span>
+          <p>Landlocked parcels or unclear access can become major dealbreakers.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Multiple-home potential</strong>
+          <span>15 points</span>
+          <p>Important for a family compound with more than one main living structure.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Septic / water potential</strong>
+          <span>10 points</span>
+          <p>Checks whether the property may support well, septic, or sewage needs.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Flood / wetlands risk</strong>
+          <span>10 points</span>
+          <p>Flood zones and wetlands can limit building, septic, and usable land.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>County / area preference</strong>
+          <span>10 points</span>
+          <p>Rewards target areas like South Georgia and North Florida counties.</p>
+        </div>
+
+        <div class="criteria-item">
+          <strong>Self-reliance potential</strong>
+          <span>5 points</span>
+          <p>Considers garden, solar, chickens, workshop, and general homestead use.</p>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        This tool is for early research only. Always verify zoning, deed restrictions,
+        road access, surveys, flood maps, wetlands, septic approval, utilities, and
+        county rules before making any decision.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const targetStates = ["GA", "FL"];
+
+    const targetCounties = [
+      "camden",
+      "charlton",
+      "brantley",
+      "ware",
+      "wayne",
+      "pierce",
+      "glynn",
+      "nassau",
+      "baker",
+      "columbia",
+      "union",
+      "bradford",
+      "hamilton",
+      "suwannee"
+    ];
+
+    const ideal = {
+      minAcres: 10,
+      idealMinAcres: 20,
+      idealMaxAcres: 40,
+      maxAcres: 60,
+      maxBudget: 300000,
+      idealPricePerAcre: 8000,
+      maxPricePerAcre: 12000
+    };
+
+    const listingUrl = document.getElementById("listingUrl");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resetBtnBottom = document.getElementById("resetBtnBottom");
+    const detailsSection = document.getElementById("detailsSection");
+    const resultSection = document.getElementById("resultSection");
+    const scoreBtn = document.getElementById("scoreBtn");
+    const analyzeStatus = document.getElementById("analyzeStatus");
+
+    const price = document.getElementById("price");
+    const acres = document.getElementById("acres");
+    const state = document.getElementById("state");
+    const county = document.getElementById("county");
+    const roadAccess = document.getElementById("roadAccess");
+    const multipleHomes = document.getElementById("multipleHomes");
+    const septicWater = document.getElementById("septicWater");
+    const floodWetlands = document.getElementById("floodWetlands");
+    const utilities = document.getElementById("utilities");
+    const selfReliance = document.getElementById("selfReliance");
+
+    const scoreText = document.getElementById("scoreText");
+    const confidenceText = document.getElementById("confidenceText");
+    const scoreBadge = document.getElementById("scoreBadge");
+    const verdictText = document.getElementById("verdictText");
+    const snapshotList = document.getElementById("snapshotList");
+    const strengthList = document.getElementById("strengthList");
+    const warningList = document.getElementById("warningList");
+    const openListingBtn = document.getElementById("openListingBtn");
+
+    analyzeBtn.addEventListener("click", analyzeListingUrl);
+    scoreBtn.addEventListener("click", scoreLand);
+    resetBtn.addEventListener("click", resetTool);
+    resetBtnBottom.addEventListener("click", resetTool);
+
+    async function analyzeListingUrl() {
+      const url = listingUrl.value.trim();
+
+      if (!url) {
+        alert("Paste a land listing URL first.");
+        return;
+      }
+
+      resetResultOnly();
+
+      analyzeBtn.disabled = true;
+      analyzeBtn.textContent = "Analyzing...";
+      analyzeStatus.textContent = "Trying to read the listing and pull basic details...";
+
+      try {
+        const response = await fetch("/api/land-scout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          analyzeStatus.textContent =
+            data.error ||
+            "Could not analyze this listing. You can still enter the details manually.";
+          detailsSection.classList.remove("hidden");
+          detailsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+
+        const extracted = data.extracted || {};
+
+        if (extracted.price) {
+          price.value = extracted.price;
+        }
+
+        if (extracted.acres) {
+          acres.value = extracted.acres;
+        }
+
+        if (extracted.state) {
+          state.value = extracted.state;
+        }
+
+        if (extracted.county) {
+          county.value = extracted.county;
+        }
+
+        detailsSection.classList.remove("hidden");
+
+        const notes = Array.isArray(extracted.notes) ? extracted.notes : [];
+
+        if (extracted.price && extracted.acres) {
+          analyzeStatus.textContent =
+            "Basic listing details were detected. Scoring now — review the fields before trusting the result.";
+
+          scoreLand();
+        } else {
+          analyzeStatus.textContent =
+            "The listing was reached, but not enough details were detected to score it automatically. Fill in the missing fields and click Score This Land.";
+
+          if (notes.length) {
+            warningList.innerHTML = "";
+            notes.forEach((note) => {
+              const li = document.createElement("li");
+              li.textContent = note;
+              warningList.appendChild(li);
+            });
+          }
+
+          detailsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      } catch (error) {
+        analyzeStatus.textContent =
+          "Something went wrong while analyzing this listing. You can still enter the details manually.";
+        detailsSection.classList.remove("hidden");
+        detailsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "Analyze Land";
+      }
+    }
+
+    function scoreLand() {
+      const url = listingUrl.value.trim();
+      const priceValue = Number(price.value);
+      const acreValue = Number(acres.value);
+      const stateValue = state.value;
+      const countyValue = county.value.trim().toLowerCase();
+      const pricePerAcre = priceValue > 0 && acreValue > 0 ? priceValue / acreValue : 0;
+
+      let score = 0;
+      let knownFields = 0;
+      const totalResearchFields = 10;
+
+      const strengths = [];
+      const warnings = [];
+      const snapshot = [];
+
+      if (!url) {
+        alert("Paste a land listing URL first.");
+        return;
+      }
+
+      if (!priceValue || !acreValue) {
+        alert("Enter at least price and acres before scoring.");
+        return;
+      }
+
+      if (acreValue >= ideal.idealMinAcres && acreValue <= ideal.idealMaxAcres) {
+        score += 15;
+        strengths.push("Acreage is in the ideal range for a family compound.");
+      } else if (acreValue >= ideal.minAcres && acreValue <= ideal.maxAcres) {
+        score += 10;
+        strengths.push("Acreage could work, but it is outside the ideal range.");
+      } else if (acreValue > ideal.maxAcres) {
+        score += 8;
+        warnings.push("Acreage is larger than the current target range and may add cost or maintenance.");
+      } else {
+        score += 3;
+        warnings.push("Acreage may be too small for the full compound plan.");
+      }
+
+      if (pricePerAcre <= ideal.idealPricePerAcre) {
+        score += 15;
+        strengths.push("Price per acre is within the ideal range.");
+      } else if (pricePerAcre <= ideal.maxPricePerAcre) {
+        score += 10;
+        strengths.push("Price per acre is acceptable but not a bargain.");
+      } else {
+        score += 3;
+        warnings.push("Price per acre is above the current target range.");
+      }
+
+      if (priceValue <= ideal.maxBudget) {
+        score += 10;
+        strengths.push("Total price is within the current target budget.");
+      } else if (priceValue <= ideal.maxBudget * 1.2) {
+        score += 5;
+        warnings.push("Total price is slightly above the current target budget.");
+      } else {
+        score += 1;
+        warnings.push("Total price is well above the current target budget.");
+      }
+
+      if (targetStates.includes(stateValue) && targetCounties.includes(countyValue)) {
+        score += 10;
+        strengths.push("Property is in one of the target areas.");
+      } else if (targetStates.includes(stateValue)) {
+        score += 6;
+        warnings.push("Property is in a target state, but not one of the preferred counties.");
+      } else if (stateValue) {
+        score += 2;
+        warnings.push("Property is outside the current target states.");
+      } else {
+        warnings.push("State is unknown.");
+      }
+
+      score += scoreSelectValue(roadAccess.value, 10, 6, 0);
+      addKnownOrWarning(
+        roadAccess.value,
+        "Road access looks usable.",
+        "Road access needs to be verified.",
+        "Road access may be a major issue.",
+        strengths,
+        warnings
+      );
+
+      score += scoreSelectValue(multipleHomes.value, 15, 7, 0);
+      addKnownOrWarning(
+        multipleHomes.value,
+        "Multiple-home potential looks promising.",
+        "Multiple-home rules need county verification.",
+        "Multiple homes may not be allowed.",
+        strengths,
+        warnings
+      );
+
+      score += scoreSelectValue(septicWater.value, 10, 5, 0);
+      addKnownOrWarning(
+        septicWater.value,
+        "Septic / water potential looks workable.",
+        "Septic, well, or sewage options need research.",
+        "Septic / water may be a major concern.",
+        strengths,
+        warnings
+      );
+
+      if (floodWetlands.value === "low") {
+        score += 10;
+        strengths.push("No obvious flood or wetlands issue based on current info.");
+      } else if (floodWetlands.value === "medium") {
+        score += 4;
+        warnings.push("Flood and wetlands risk needs research.");
+      } else if (floodWetlands.value === "high") {
+        warnings.push("Flood or wetlands risk may be high.");
+      } else {
+        warnings.push("Flood and wetlands status is unknown.");
+      }
+
+      score += scoreSelectValue(utilities.value, 5, 3, 0);
+      addKnownOrWarning(
+        utilities.value,
+        "Utilities appear available or nearby.",
+        "Utility access needs research.",
+        "Utilities may be difficult or expensive.",
+        strengths,
+        warnings
+      );
+
+      if (selfReliance.value === "high") {
+        score += 5;
+        strengths.push("Property looks strong for garden, solar, animals, workshop, or general homestead use.");
+      } else if (selfReliance.value === "medium") {
+        score += 3;
+        strengths.push("Property may support some self-reliance features.");
+      } else if (selfReliance.value === "low") {
+        score += 1;
+        warnings.push("Self-reliance potential looks limited.");
+      } else {
+        warnings.push("Self-reliance potential is unknown.");
+      }
+
+      const valuesForConfidence = [
+        price.value,
+        acres.value,
+        state.value,
+        county.value,
+        roadAccess.value,
+        multipleHomes.value,
+        septicWater.value,
+        floodWetlands.value,
+        utilities.value,
+        selfReliance.value
+      ];
+
+      valuesForConfidence.forEach((value) => {
+        if (value && value !== "unknown") knownFields += 1;
+      });
+
+      const confidencePercent = Math.round((knownFields / totalResearchFields) * 100);
+      const confidenceLabel =
+        confidencePercent >= 75 ? "High" : confidencePercent >= 45 ? "Medium" : "Low";
+
+      const finalScore = Math.max(0, Math.min(100, Math.round(score)));
+
+      snapshot.push(`Price: ${formatMoney(priceValue)}`);
+      snapshot.push(`Acres: ${acreValue}`);
+      snapshot.push(`Price per acre: ${formatMoney(pricePerAcre)}`);
+      snapshot.push(`State: ${stateValue || "Unknown"}`);
+      snapshot.push(`County: ${county.value.trim() || "Unknown"}`);
+
+      scoreText.textContent = `Homestead Fit Score: ${finalScore} / 100`;
+      confidenceText.textContent = `Confidence: ${confidenceLabel} (${confidencePercent}%)`;
+      scoreBadge.textContent = finalScore;
+
+      verdictText.textContent = getVerdict(finalScore, confidenceLabel);
+
+      renderList(snapshotList, snapshot);
+      renderList(strengthList, strengths.length ? strengths : ["No major strengths entered yet."]);
+      renderList(warningList, warnings.length ? warnings : ["No major warnings entered yet."]);
+
+      openListingBtn.href = url;
+
+      resultSection.classList.remove("hidden");
+      resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function scoreSelectValue(value, fullPoints, maybePoints, noPoints) {
+      if (value === "yes") return fullPoints;
+      if (value === "maybe") return maybePoints;
+      if (value === "no") return noPoints;
+      return 0;
+    }
+
+    function addKnownOrWarning(value, goodText, maybeText, badText, strengths, warnings) {
+      if (value === "yes") strengths.push(goodText);
+      if (value === "maybe") warnings.push(maybeText);
+      if (value === "no") warnings.push(badText);
+      if (value === "unknown") warnings.push(maybeText);
+    }
+
+    function getVerdict(score, confidence) {
+      if (score >= 80 && confidence === "High") {
+        return "Strong candidate. This property looks worth serious follow-up, but still needs official county, zoning, flood, septic, and survey verification.";
+      }
+
+      if (score >= 80) {
+        return "Promising candidate, but confidence is not high yet. This one may be worth researching further before getting excited.";
+      }
+
+      if (score >= 65) {
+        return "Possible fit. The land has some useful traits, but there are enough unknowns or tradeoffs that it needs more research.";
+      }
+
+      if (score >= 50) {
+        return "Weak-to-maybe fit. It may work for some goals, but it does not currently look ideal for the full family-compound plan.";
+      }
+
+      return "Low fit. Based on the information entered, this property is probably not a strong match for the homestead / family-compound goal.";
+    }
+
+    function renderList(element, items) {
+      element.innerHTML = "";
+
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        element.appendChild(li);
+      });
+    }
+
+    function formatMoney(value) {
+      if (!value || Number.isNaN(value)) return "Unknown";
+
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    function resetResultOnly() {
+      resultSection.classList.add("hidden");
+      snapshotList.innerHTML = "";
+      strengthList.innerHTML = "";
+      warningList.innerHTML = "";
+    }
+
+    function resetTool() {
+      listingUrl.value = "";
+      price.value = "";
+      acres.value = "";
+      state.value = "";
+      county.value = "";
+      roadAccess.value = "unknown";
+      multipleHomes.value = "unknown";
+      septicWater.value = "unknown";
+      floodWetlands.value = "unknown";
+      utilities.value = "unknown";
+      selfReliance.value = "unknown";
+      analyzeStatus.textContent = "";
+
+      detailsSection.classList.add("hidden");
+      resultSection.classList.add("hidden");
+
+      snapshotList.innerHTML = "";
+      strengthList.innerHTML = "";
+      warningList.innerHTML = "";
+
+      listingUrl.focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
+
+  <style>
+    .page-shell {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .hero-card,
+    .details-card,
+    .result-card,
+    .criteria-card {
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.96), rgba(6, 7, 6, 0.98));
+      border: 1px solid rgba(228, 184, 96, 0.24);
+      border-radius: 28px;
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #e4b860;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 14px;
+      font-size: clamp(2.4rem, 8vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: clamp(1.45rem, 4vw, 2.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .intro {
+      max-width: 720px;
+      color: #d8cfba;
+      font-size: clamp(1.05rem, 3vw, 1.35rem);
+      line-height: 1.55;
+    }
+
+    .small-note,
+    .criteria-card p,
+    .disclaimer,
+    .status-text {
+      color: #d8cfba;
+      line-height: 1.6;
+    }
+
+    .status-text {
+      min-height: 1.4rem;
+      margin: 14px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .url-box {
+      margin-top: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #f5f1e8;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid rgba(228, 184, 96, 0.2);
+      border-radius: 16px;
+      background: #050605;
+      color: #f5f1e8;
+      font-size: 1rem;
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: rgba(245, 241, 232, 0.42);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #e4b860;
+      box-shadow: 0 0 0 3px rgba(228, 184, 96, 0.18);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    .button-row a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      background: #e4b860;
+      color: #17130a;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 900;
+      padding: 12px 20px;
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease,
+        opacity 180ms ease;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+      transform: none;
+    }
+
+    button:hover,
+    .button-row a:hover {
+      transform: translateY(-1px);
+      background: #f0c66f;
+    }
+
+    button.secondary {
+      background: #050605;
+      color: #f5f1e8;
+      border: 1px solid rgba(228, 184, 96, 0.24);
+    }
+
+    button.secondary:hover {
+      background: rgba(228, 184, 96, 0.08);
+      border-color: rgba(228, 184, 96, 0.45);
+    }
+
+    .full-width {
+      width: 100%;
+      margin-top: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .score-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px;
+      border: 1px solid rgba(228, 184, 96, 0.22);
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(15, 15, 13, 0.96), rgba(4, 5, 4, 0.98));
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    }
+
+    .score-wrap h2 {
+      margin-bottom: 6px;
+    }
+
+    .confidence {
+      margin-bottom: 0;
+      color: #d8cfba;
+    }
+
+    .score-badge {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 84px;
+      height: 84px;
+      border-radius: 999px;
+      background: #e4b860;
+      color: #17130a;
+      font-size: 2rem;
+      font-weight: 950;
+    }
+
+    .result-block {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(228, 184, 96, 0.18);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #d8cfba;
+      line-height: 1.65;
+    }
+
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .criteria-item {
+      border: 1px solid rgba(228, 184, 96, 0.22);
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(15, 15, 13, 0.96), rgba(4, 5, 4, 0.98));
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+      padding: 16px;
+    }
+
+    .criteria-item strong,
+    .criteria-item span {
+      display: block;
+    }
+
+    .criteria-item strong {
+      margin-bottom: 4px;
+      color: #f5f1e8;
+    }
+
+    .criteria-item span {
+      margin-bottom: 10px;
+      color: #e4b860;
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .criteria-item p {
+      margin-bottom: 0;
+      font-size: 0.93rem;
+    }
+
+    .disclaimer {
+      margin: 24px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid rgba(228, 184, 96, 0.18);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 720px) {
+      .page-shell {
+        width: min(100% - 24px, 980px);
+        padding: 24px 0;
+      }
+
+      .hero-card,
+      .details-card,
+      .result-card,
+      .criteria-card {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .form-grid,
+      .criteria-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      button,
+      .button-row a {
+        width: 100%;
+      }
+
+      .score-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .score-badge {
+        width: 72px;
+        height: 72px;
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</BaseLayout>
