@@ -1,0 +1,668 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export function getStaticPaths() {
+  const zodiacSigns = {
+    aries: {
+      name: "Aries",
+      symbol: "♈",
+      body: "Head",
+      element: "Fire",
+      mode: "Cardinal",
+      season: "Early spring",
+      figure: "The Ram",
+      phrase: "Begin. Strike. Lead.",
+      summary:
+        "Aries is the first sign of the zodiac and is traditionally connected with beginnings, courage, action, and the head.",
+      bodyNote:
+        "In old zodiac-man diagrams, Aries was associated with the head. Symbolically, this connects Aries with instinct, leadership, decision-making, and forward motion.",
+      oldWorldNote:
+        "Older almanacs often treated Aries as the sign of starting force — the spark that begins the wheel of the year.",
+      reflection:
+        "Use Aries as a reminder to begin before everything is perfect, but do not confuse speed with wisdom.",
+      keywords: ["Courage", "Action", "Initiation", "Fire", "Impulse"],
+    },
+
+    taurus: {
+      name: "Taurus",
+      symbol: "♉",
+      body: "Neck & Throat",
+      element: "Earth",
+      mode: "Fixed",
+      season: "Spring",
+      figure: "The Bull",
+      phrase: "Root. Build. Hold.",
+      summary:
+        "Taurus is traditionally connected with steadiness, appetite, comfort, the land, and the throat.",
+      bodyNote:
+        "Historic zodiac-man charts associated Taurus with the neck and throat. Symbolically, this connects Taurus with voice, food, stability, and what sustains the body.",
+      oldWorldNote:
+        "Taurus falls in the fertile part of spring, making it easy to associate with growth, grazing animals, soil, and stored strength.",
+      reflection:
+        "Use Taurus as a reminder to build slowly, protect your base, and value what is real and useful.",
+      keywords: ["Stability", "Food", "Voice", "Land", "Endurance"],
+    },
+
+    gemini: {
+      name: "Gemini",
+      symbol: "♊",
+      body: "Lungs",
+      element: "Air",
+      mode: "Mutable",
+      season: "Late spring",
+      figure: "The Twins",
+      phrase: "Learn. Speak. Connect.",
+      summary:
+        "Gemini is traditionally associated with communication, movement, curiosity, duality, and the lungs.",
+      bodyNote:
+        "Old zodiac-man systems connected Gemini with the lungs, arms, and breath. This fits its air symbolism and its connection to speech and exchange.",
+      oldWorldNote:
+        "Gemini represents pairs, conversation, messages, and the back-and-forth movement of thought.",
+      reflection:
+        "Use Gemini as a reminder to stay curious, ask better questions, and keep learning from many directions.",
+      keywords: ["Communication", "Learning", "Breath", "Curiosity", "Movement"],
+    },
+
+    cancer: {
+      name: "Cancer",
+      symbol: "♋",
+      body: "Stomach",
+      element: "Water",
+      mode: "Cardinal",
+      season: "Early summer",
+      figure: "The Crab",
+      phrase: "Protect. Feed. Remember.",
+      summary:
+        "Cancer is traditionally connected with home, memory, protection, nourishment, and the stomach.",
+      bodyNote:
+        "Zodiac-man diagrams often linked Cancer with the stomach and chest area. Symbolically, this connects Cancer with nourishment, care, and emotional safety.",
+      oldWorldNote:
+        "Cancer arrives around the beginning of summer, a season of growth, family, water, and shelter.",
+      reflection:
+        "Use Cancer as a reminder to protect your home base and care for the people and routines that sustain you.",
+      keywords: ["Home", "Memory", "Nourishment", "Protection", "Water"],
+    },
+
+    leo: {
+      name: "Leo",
+      symbol: "♌",
+      body: "Heart",
+      element: "Fire",
+      mode: "Fixed",
+      season: "High summer",
+      figure: "The Lion",
+      phrase: "Shine. Create. Lead warmly.",
+      summary:
+        "Leo is traditionally associated with the heart, courage, confidence, loyalty, creativity, and visible strength.",
+      bodyNote:
+        "Historic zodiac-man charts commonly connected Leo with the heart and upper back. Symbolically, this links Leo with bravery, vitality, and generosity.",
+      oldWorldNote:
+        "Leo belongs to the hot center of summer, which made it a natural symbol of solar force, pride, and life energy.",
+      reflection:
+        "Use Leo as a reminder to act with heart, create boldly, and lead without becoming arrogant.",
+      keywords: ["Heart", "Courage", "Creativity", "Loyalty", "Vitality"],
+    },
+
+    virgo: {
+      name: "Virgo",
+      symbol: "♍",
+      body: "Intestines",
+      element: "Earth",
+      mode: "Mutable",
+      season: "Late summer",
+      figure: "The Maiden",
+      phrase: "Sort. Refine. Serve.",
+      summary:
+        "Virgo is traditionally connected with harvest, order, usefulness, service, analysis, and digestion.",
+      bodyNote:
+        "Old zodiac-man systems associated Virgo with the intestines. Symbolically, this connects Virgo with sorting, processing, refining, and separating what is useful from what is waste.",
+      oldWorldNote:
+        "Virgo appears near harvest season, when grain, herbs, and food must be gathered, sorted, stored, and preserved.",
+      reflection:
+        "Use Virgo as a reminder to clean up systems, improve small details, and make your life more functional.",
+      keywords: ["Order", "Harvest", "Service", "Digestion", "Refinement"],
+    },
+
+    libra: {
+      name: "Libra",
+      symbol: "♎",
+      body: "Kidneys",
+      element: "Air",
+      mode: "Cardinal",
+      season: "Early autumn",
+      figure: "The Scales",
+      phrase: "Balance. Weigh. Choose.",
+      summary:
+        "Libra is traditionally associated with balance, justice, beauty, relationships, and the kidneys.",
+      bodyNote:
+        "Traditional charts connect Libra with the kidneys. Symbolically, this fits the themes of balance, filtering, and keeping the inner system in harmony.",
+      oldWorldNote:
+        "Libra arrives around the autumn balance point, making the scales a fitting image for equal measure and fair judgment.",
+      reflection:
+        "Use Libra as a reminder to restore balance, choose fairly, and consider the weight of your decisions.",
+      keywords: ["Balance", "Justice", "Beauty", "Relationships", "Harmony"],
+    },
+
+    scorpio: {
+      name: "Scorpio",
+      symbol: "♏",
+      body: "Reproductive Organs",
+      element: "Water",
+      mode: "Fixed",
+      season: "Autumn",
+      figure: "The Scorpion",
+      phrase: "Descend. Transform. Rise.",
+      summary:
+        "Scorpio is traditionally connected with depth, secrecy, danger, transformation, and reproductive force.",
+      bodyNote:
+        "Old zodiac-man diagrams often associated Scorpio with the reproductive organs. Symbolically, this connects Scorpio with hidden life-force, creation, destruction, and regeneration.",
+      oldWorldNote:
+        "Scorpio sits deep in autumn, when the year darkens and the surface world begins to die back.",
+      reflection:
+        "Use Scorpio as a reminder to face what is hidden, cut away what is false, and turn pressure into strength.",
+      keywords: ["Depth", "Transformation", "Secrecy", "Power", "Regeneration"],
+    },
+
+    sagittarius: {
+      name: "Sagittarius",
+      symbol: "♐",
+      body: "Hips & Thighs",
+      element: "Fire",
+      mode: "Mutable",
+      season: "Late autumn",
+      figure: "The Archer",
+      phrase: "Aim. Travel. Seek.",
+      summary:
+        "Sagittarius is traditionally associated with travel, distance, aim, philosophy, and the hips and thighs.",
+      bodyNote:
+        "Traditional zodiac-man charts connected Sagittarius with the hips and thighs — the parts of the body that help carry a person forward.",
+      oldWorldNote:
+        "The archer points beyond the immediate world, making Sagittarius a symbol of movement, belief, exploration, and long-range vision.",
+      reflection:
+        "Use Sagittarius as a reminder to aim higher, go farther, and keep seeking truth instead of comfort alone.",
+      keywords: ["Travel", "Aim", "Truth", "Exploration", "Fire"],
+    },
+
+    capricorn: {
+      name: "Capricorn",
+      symbol: "♑",
+      body: "Bones & Joints",
+      element: "Earth",
+      mode: "Cardinal",
+      season: "Early winter",
+      figure: "The Goat",
+      phrase: "Climb. Endure. Build.",
+      summary:
+        "Capricorn is traditionally connected with time, discipline, endurance, structure, bones, and joints.",
+      bodyNote:
+        "Old zodiac-man systems often associated Capricorn with knees, bones, and the body’s support structure.",
+      oldWorldNote:
+        "Capricorn begins at the hard edge of winter, making it a symbol of survival, ambition, patience, and long effort.",
+      reflection:
+        "Use Capricorn as a reminder to build things that last and accept that meaningful work takes time.",
+      keywords: ["Discipline", "Structure", "Endurance", "Time", "Bones"],
+    },
+
+    aquarius: {
+      name: "Aquarius",
+      symbol: "♒",
+      body: "Circulation",
+      element: "Air",
+      mode: "Fixed",
+      season: "Winter",
+      figure: "The Water Bearer",
+      phrase: "Invent. Connect. Distribute.",
+      summary:
+        "Aquarius is traditionally associated with circulation, networks, invention, groups, and future-facing ideas.",
+      bodyNote:
+        "Older systems often connected Aquarius with the calves, ankles, and circulation. Symbolically, this fits movement through a network.",
+      oldWorldNote:
+        "Though represented by the water bearer, Aquarius is an air sign. It often points to ideas, systems, communities, and shared resources.",
+      reflection:
+        "Use Aquarius as a reminder to think in systems, question old patterns, and build better networks.",
+      keywords: ["Systems", "Networks", "Invention", "Community", "Circulation"],
+    },
+
+    pisces: {
+      name: "Pisces",
+      symbol: "♓",
+      body: "Feet",
+      element: "Water",
+      mode: "Mutable",
+      season: "Late winter",
+      figure: "The Fish",
+      phrase: "Dream. Release. Return.",
+      summary:
+        "Pisces is traditionally associated with dreams, endings, compassion, intuition, and the feet.",
+      bodyNote:
+        "Traditional zodiac-man diagrams usually place Pisces at the feet, the last part of the body and the final sign of the zodiac wheel.",
+      oldWorldNote:
+        "Pisces comes at the end of winter, before the cycle begins again. It represents dissolving, remembering, and preparing for renewal.",
+      reflection:
+        "Use Pisces as a reminder to stay grounded while still listening to intuition, dreams, and quiet signals.",
+      keywords: ["Dreams", "Compassion", "Feet", "Water", "Release"],
+    },
+  };
+
+  const signList = Object.entries(zodiacSigns).map(([slug, sign]) => ({
+    slug,
+    name: sign.name,
+    symbol: sign.symbol,
+  }));
+
+  return Object.entries(zodiacSigns).map(([slug, sign]) => ({
+    params: { sign: slug },
+    props: {
+      sign,
+      slug,
+      signList,
+      topImagePath: `/${slug}-top.png`,
+      imagePath: `/${slug}.png`,
+    },
+  }));
+}
+
+const { sign, slug, signList, topImagePath, imagePath } = Astro.props;
+---
+
+<BaseLayout title={`${sign.name} | Zodiac and the Human Body`}>
+  <main class="sign-page">
+    <a class="back-link" href="/zodiac/">← Back to Zodiac Chart</a>
+
+    <section class="hero-card">
+      <div class="symbol">
+        <img
+          src={topImagePath}
+          alt={`${sign.name} top artwork`}
+          class="symbol-image"
+          loading="lazy"
+        />
+      </div>
+
+      <div>
+        <p class="eyebrow">Zodiac / {sign.body}</p>
+        <h1>{sign.name}</h1>
+        <p class="phrase">{sign.phrase}</p>
+        <p class="intro">{sign.summary}</p>
+      </div>
+    </section>
+
+    <section class="image-card">
+      <img
+        src={imagePath}
+        alt={`${sign.name} zodiac engraving`}
+        class="sign-image"
+        loading="lazy"
+      />
+    </section>
+
+    <section class="content-grid">
+      <article class="main-card">
+        <p class="card-kicker">Traditional Body Association</p>
+        <h2>{sign.body}</h2>
+        <p>{sign.bodyNote}</p>
+
+        <div class="divider"></div>
+
+        <p class="card-kicker">Old-World Note</p>
+        <p>{sign.oldWorldNote}</p>
+
+        <div class="divider"></div>
+
+        <p class="card-kicker">Reflection</p>
+        <p>{sign.reflection}</p>
+      </article>
+
+      <aside class="side-card">
+        <p class="card-kicker">Quick Reference</p>
+
+        <dl>
+          <div>
+            <dt>Sign</dt>
+            <dd>{sign.name}</dd>
+          </div>
+
+          <div>
+            <dt>Symbol</dt>
+            <dd>{sign.symbol}</dd>
+          </div>
+
+          <div>
+            <dt>Element</dt>
+            <dd>{sign.element}</dd>
+          </div>
+
+          <div>
+            <dt>Mode</dt>
+            <dd>{sign.mode}</dd>
+          </div>
+
+          <div>
+            <dt>Season</dt>
+            <dd>{sign.season}</dd>
+          </div>
+
+          <div>
+            <dt>Figure</dt>
+            <dd>{sign.figure}</dd>
+          </div>
+        </dl>
+
+        <div class="keyword-box">
+          <p class="card-kicker">Keywords</p>
+
+          <div class="keyword-list">
+            {sign.keywords.map((keyword) => (
+              <span>{keyword}</span>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="nav-card">
+      <h2>Explore the Wheel</h2>
+
+      <div class="sign-links">
+        {signList.map((item) => (
+          <a class={item.slug === slug ? "active" : ""} href={`/zodiac/${item.slug}/`}>
+            <span>{item.symbol}</span>
+            {item.name}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="note-card">
+      <h2>Historical Note</h2>
+      <p>
+        Zodiac-man diagrams were common in older almanacs and medical-astrological
+        traditions. They are useful as historical symbolism and visual culture,
+        but they should not be treated as medical advice.
+      </p>
+    </section>
+  </main>
+
+  <style>
+    .sign-page {
+      width: min(1080px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 3rem 0 5rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: #e4b860;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .hero-card,
+    .image-card,
+    .main-card,
+    .side-card,
+    .note-card,
+    .nav-card {
+      border: 1px solid rgba(228, 184, 96, 0.24);
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.96), rgba(6, 7, 6, 0.98));
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .hero-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 2.75rem);
+      align-items: center;
+      padding: clamp(1.4rem, 4vw, 2.5rem);
+    }
+
+    .symbol {
+      display: grid;
+      place-items: center;
+      width: clamp(112px, 20vw, 190px);
+      height: clamp(112px, 20vw, 190px);
+      border: 1px solid rgba(228, 184, 96, 0.32);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(228, 184, 96, 0.12), rgba(5, 6, 5, 0.95));
+      overflow: hidden;
+      box-shadow:
+        0 0 40px rgba(228, 184, 96, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .symbol-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-card {
+      margin-top: 1.2rem;
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    .sign-image {
+      display: block;
+      width: 100%;
+      max-height: 980px;
+      object-fit: contain;
+      border-radius: 20px;
+      background: #050605;
+    }
+
+    .eyebrow,
+    .card-kicker {
+      margin: 0 0 1rem;
+      color: #e4b860;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0.85rem;
+      color: #f5f1e8;
+      font-size: clamp(3rem, 8vw, 6.25rem);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      overflow-wrap: anywhere;
+    }
+
+    .phrase {
+      margin-bottom: 1rem;
+      color: #e4b860;
+      font-size: clamp(0.95rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      max-width: 760px;
+      color: #d8cfba;
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      line-height: 1.55;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+    }
+
+    .main-card,
+    .side-card,
+    .note-card,
+    .nav-card {
+      padding: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    h2 {
+      margin-bottom: 0.85rem;
+      color: #f5f1e8;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .main-card p,
+    .note-card p,
+    .nav-card p {
+      color: #d8cfba;
+      line-height: 1.7;
+    }
+
+    .divider {
+      margin: 1.5rem 0;
+      border-top: 1px solid rgba(228, 184, 96, 0.18);
+    }
+
+    dl {
+      display: grid;
+      gap: 0.9rem;
+      margin: 0;
+    }
+
+    dl div {
+      border-top: 1px solid rgba(228, 184, 96, 0.18);
+      padding-top: 0.9rem;
+    }
+
+    dt {
+      color: #e4b860;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    dd {
+      margin: 0.3rem 0 0;
+      color: #f5f1e8;
+      font-weight: 850;
+    }
+
+    .keyword-box {
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(228, 184, 96, 0.18);
+    }
+
+    .keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .keyword-list span {
+      border: 1px solid rgba(228, 184, 96, 0.22);
+      border-radius: 999px;
+      background: rgba(228, 184, 96, 0.08);
+      color: #f5f1e8;
+      font-size: 0.85rem;
+      font-weight: 850;
+      padding: 0.45rem 0.7rem;
+    }
+
+    .nav-card,
+    .note-card {
+      margin-top: 1.2rem;
+    }
+
+    .sign-links {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+
+    .sign-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(228, 184, 96, 0.18);
+      border-radius: 999px;
+      background: rgba(5, 6, 5, 0.65);
+      color: #f5f1e8;
+      font-weight: 850;
+      padding: 0.7rem 0.85rem;
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    .sign-links a:hover,
+    .sign-links a.active {
+      transform: translateY(-2px);
+      border-color: rgba(228, 184, 96, 0.55);
+      background: rgba(228, 184, 96, 0.1);
+    }
+
+    .sign-links span {
+      color: #e4b860;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 820px) {
+      .sign-page {
+        width: min(100% - 28px, 1080px);
+        padding: 2rem 0 4rem;
+      }
+
+      .hero-card,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .symbol {
+        width: 96px;
+        height: 96px;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 15vw, 4.8rem);
+      }
+
+      .sign-links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .sign-links {
+        grid-template-columns: 1fr;
+      }
+
+      .image-card {
+        padding: 0.65rem;
+      }
+
+      .sign-image {
+        border-radius: 16px;
+      }
+    }
+  </style>
+</BaseLayout>
