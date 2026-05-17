@@ -2,119 +2,288 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout
-  title="Outside | Makeaway"
-  description="Outside notes from Makeaway — hiking, camping, camp cooking, gear, nature, and the places that reset your brain."
+<BaseLayout title="Outside">
+  <main class="outside-page">
+    <section class="hero">
+      <p class="eyebrow">Makeaway / Outside</p>
+      <h1>Outside</h1>
+      <p class="intro">
+        Hiking, camping, camp cooking, nature, gear, and the places that reset
+        your brain.
+      </p>
+    </section>
+
+    <section class="section-block">
+      <h2>Useful links</h2>
+
+      <a
+        class="video-card"
+        href="https://www.youtube.com/shorts/ZLQdLs_XHLY"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div class="video-thumb">
+          <img
+            src="https://img.youtube.com/vi/ZLQdLs_XHLY/hqdefault.jpg"
+            alt="YouTube Short preview"
+            loading="lazy"
+          />
+          <span class="play-button">▶</span>
+        </div>
+
+        <div class="video-content">
+          <p class="card-kicker">Video</p>
+          <h2>Scramble eggs in bottle for camping</h2>
+          <p>
+            Youtube short
+          </p>
+          <span class="card-link">Watch on YouTube →</span>
+        </div>
+      </a>
+      <a
+  class="video-card"
+  href="https://www.youtube.com/watch?v=_cISdy8yr6o"
+  target="_blank"
+  rel="noopener noreferrer"
 >
-  <section class="page-content">
-    <a class="back-link" href="/">← Back to home</a>
+  <div class="video-thumb">
+    <img
+      src="https://img.youtube.com/vi/_cISdy8yr6o/hqdefault.jpg"
+      alt="YouTube video preview"
+      loading="lazy"
+    />
+    <span class="play-button">▶</span>
+  </div>
 
-    <p class="eyebrow">Makeaway / Outside</p>
-
-    <h1>Outside</h1>
-
-    <p class="intro">
-      Hiking, camping, camp cooking, nature, gear, and the places that reset
-      your brain.
+  <div class="video-content">
+    <p class="card-kicker">Video</p>
+    <h2>Tent Setup 101</h2>
+    <p>
+      Youtube short.
     </p>
-  </section>
+    <span class="card-link">Watch on YouTube →</span>
+  </div>
+</a>
 
-  <section class="link-section">
-    <h2>Outside Notes</h2>
+      
+        </article>
+      </div>
+    </section>
+  </main>
 
-    <div class="article-list">
-      <a class="article-button" href="/outside/scrambled-eggs-by-the-campfire">
-        Scrambled eggs by the campfire
-      </a>
-
-      <a class="article-button" href="/outside/how-to-keep-steaks-cold">
-        How to keep steaks cold
-      </a>
-
-      <a class="article-button" href="/outside/campfire-cooking-basics">
-        Campfire cooking basics
-      </a>
-
-      <a class="article-button" href="/outside/camping-gear-checklist">
-        Camping gear checklist
-      </a>
-
-      <a class="article-button" href="/outside/trail-notes">
-        Trail notes
-      </a>
-    </div>
-  </section>
-</BaseLayout>
-
-<style>
-  .back-link {
-    display: inline-block;
-    margin-bottom: 48px;
-    color: var(--text-muted);
-    font-weight: 800;
-    text-decoration: none;
-  }
-
-  .back-link:hover {
-    color: var(--text-main);
-  }
-
-  .eyebrow {
-    margin: 0 0 14px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  .link-section {
-    margin-top: 72px;
-  }
-
-  .link-section h2 {
-    margin: 0 0 22px;
-    color: var(--text-main);
-    font-size: 1.6rem;
-  }
-
-  .article-list {
-    display: grid;
-    gap: 14px;
-  }
-
-  .article-button,
-  .article-button:visited {
-    display: block;
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
-    padding: 18px 20px;
-    background: var(--card);
-    color: var(--text-main);
-    font-weight: 800;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease,
-      background 180ms ease,
-      box-shadow 180ms ease;
-  }
-
-  .article-button:hover {
-    transform: translateY(-4px);
-    border-color: rgba(245, 241, 232, 0.45);
-    background: var(--card-hover);
-    box-shadow: 0 18px 45px rgba(255, 255, 255, 0.06);
-  }
-
-  .article-button:focus-visible {
-    outline: 3px solid var(--text-main);
-    outline-offset: 4px;
-  }
-
-  @media (max-width: 800px) {
-    .link-section {
-      margin-top: 52px;
+  <style>
+    .outside-page {
+      width: min(1100px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 3rem 0 5rem;
     }
-  }
-</style>
+
+    .hero {
+      margin-bottom: 4.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: #e4b860;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 1.25rem;
+      color: #f5f1e8;
+      font-size: clamp(4rem, 12vw, 7.5rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+    }
+
+    .intro {
+      max-width: 720px;
+      color: #d8cfba;
+      font-size: clamp(1.25rem, 3vw, 1.7rem);
+      line-height: 1.45;
+    }
+
+    .section-block h2 {
+      margin-bottom: 1.25rem;
+      color: #f5f1e8;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      letter-spacing: -0.05em;
+    }
+
+    .video-card {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1.25rem;
+      align-items: stretch;
+      margin: 1.5rem 0 2rem;
+      padding: 1rem;
+      border: 1px solid rgba(228, 184, 96, 0.24);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.96), rgba(6, 7, 6, 0.98));
+      color: #f5f1e8;
+      text-decoration: none;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    .video-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(228, 184, 96, 0.58);
+      background:
+        linear-gradient(180deg, rgba(26, 24, 18, 0.98), rgba(8, 8, 7, 0.98));
+    }
+
+    .video-thumb {
+      position: relative;
+      overflow: hidden;
+      min-height: 150px;
+      border-radius: 18px;
+      background: #090909;
+    }
+
+    .video-thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 150px;
+      object-fit: cover;
+      opacity: 0.88;
+      transition:
+        transform 220ms ease,
+        opacity 220ms ease;
+    }
+
+    .video-card:hover .video-thumb img {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+
+    .play-button {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      background: rgba(228, 184, 96, 0.94);
+      color: #080806;
+      font-size: 1.35rem;
+      font-weight: 900;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .video-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0.35rem 0.25rem;
+    }
+
+    .card-kicker {
+      margin: 0 0 0.55rem;
+      color: #e4b860;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .video-content h2 {
+      margin: 0 0 0.65rem;
+      color: #f5f1e8;
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      letter-spacing: -0.04em;
+    }
+
+    .video-content p {
+      margin: 0;
+      color: #d8cfba;
+      line-height: 1.55;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #e4b860;
+      font-weight: 900;
+    }
+
+    .notes-list {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .note-card {
+      padding: 1.25rem 1.35rem;
+      border: 1px solid rgba(228, 184, 96, 0.2);
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.94), rgba(7, 7, 6, 0.98));
+      color: #f5f1e8;
+      box-shadow:
+        0 16px 42px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    }
+
+    .note-card h3 {
+      margin-bottom: 0.45rem;
+      color: #f5f1e8;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .note-card p {
+      margin: 0;
+      color: #d8cfba;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 720px) {
+      .outside-page {
+        width: min(100% - 28px, 1100px);
+        padding: 2rem 0 4rem;
+      }
+
+      .hero {
+        margin-bottom: 3rem;
+      }
+
+      .video-card {
+        grid-template-columns: 1fr;
+        padding: 0.85rem;
+      }
+
+      .video-thumb,
+      .video-thumb img {
+        min-height: 190px;
+      }
+
+      .video-content {
+        padding: 0.25rem 0.15rem 0.4rem;
+      }
+
+      .note-card {
+        padding: 1.1rem;
+      }
+    }
+  </style>
+</BaseLayout>
