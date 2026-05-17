@@ -1,0 +1,317 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Fishing Knots Guide">
+  <main class="article-page">
+    <section class="hero">
+      <p class="eyebrow">Makeaway / Outside / Fishing</p>
+      <h1>Get Knotty</h1>
+      <p class="intro">
+        A quick field guide to a few basic fishing knots worth knowing before you
+        head outside.
+      </p>
+    </section>
+
+    <section class="article-card">
+      <div class="article-copy">
+        <p class="lead">
+          A fishing knot is the small detail that decides whether your line holds
+          or fails. These are quick notes for three useful knots: the improved
+          clinch knot, the Palomar knot, and the blood knot.
+        </p>
+
+        <div class="knot-grid">
+          <article class="knot-card">
+            <p class="card-kicker">Hook / Lure Knot</p>
+            <h2>Improved Clinch Knot</h2>
+            <p>
+              A common knot for tying fishing line to a hook, lure, or swivel.
+              Run the line through the eye, wrap the tag end around the main line,
+              pass it back through the loop near the eye, then tighten and trim.
+            </p>
+            <ul>
+              <li>Good general-purpose fishing knot.</li>
+              <li>Works well for hooks, lures, and swivels.</li>
+              <li>Moisten the line before tightening.</li>
+            </ul>
+          </article>
+
+          <article class="knot-card">
+            <p class="card-kicker">Strong Simple Knot</p>
+            <h2>Palomar Knot</h2>
+            <p>
+              A strong, simple knot often used with braided or monofilament line.
+              Double the line, pass it through the hook eye, tie an overhand knot,
+              pass the hook through the loop, then pull both ends tight.
+            </p>
+            <ul>
+              <li>Very strong when tied correctly.</li>
+              <li>Good for hooks and smaller lures.</li>
+              <li>Keep the line from twisting while tightening.</li>
+            </ul>
+          </article>
+
+          <article class="knot-card">
+            <p class="card-kicker">Line-to-Line Knot</p>
+            <h2>Blood Knot</h2>
+            <p>
+              A blood knot joins two pieces of fishing line together. Overlap the
+              lines, wrap each tag end around the opposite line, pass both tag
+              ends back through the center, then pull tight.
+            </p>
+            <ul>
+              <li>Useful for joining leader to main line.</li>
+              <li>Best when the two lines are close in diameter.</li>
+              <li>Trim the tag ends after tightening.</li>
+            </ul>
+          </article>
+        </div>
+
+        <section class="tips-section">
+          <h2>Quick Knot Tips</h2>
+
+          <div class="tips-grid">
+            <div>
+              <h3>Wet the line</h3>
+              <p>
+                A little moisture helps the knot cinch down smoother and reduces
+                heat from friction.
+              </p>
+            </div>
+
+            <div>
+              <h3>Pull test it</h3>
+              <p>
+                Tug the line after tying. If the knot slips, curls strangely, or
+                looks weak, cut it and tie it again.
+              </p>
+            </div>
+
+            <div>
+              <h3>Trim cleanly</h3>
+              <p>
+                Leave enough tag end so the knot does not slip, but trim the extra
+                line so it does not catch weeds or guides.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="image-column">
+        <div class="image-card">
+          <img
+            src="/public/knot-guide.png"
+            alt="Fishing knot diagrams showing improved clinch knot, Palomar knot, and blood knot"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="note-card">
+          <h3>Field Note</h3>
+          <p>
+            Practice these knots at home with spare line before you need them on
+            the water. It is easier to learn when you are not fighting wind, rain,
+            or a fish.
+          </p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <style>
+    .article-page {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 3rem 0 5rem;
+    }
+
+    .hero {
+      margin-bottom: 3rem;
+    }
+
+    .eyebrow,
+    .card-kicker {
+      margin: 0 0 1rem;
+      color: #e4b860;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin-bottom: 1.25rem;
+      color: #f5f1e8;
+      font-size: clamp(4rem, 12vw, 7rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+    }
+
+    .intro {
+      max-width: 760px;
+      color: #d8cfba;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      line-height: 1.45;
+    }
+
+    .article-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .article-copy,
+    .image-card,
+    .note-card,
+    .knot-card,
+    .tips-section {
+      border: 1px solid rgba(228, 184, 96, 0.24);
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.96), rgba(6, 7, 6, 0.98));
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .article-copy {
+      border-radius: 28px;
+      padding: clamp(1.4rem, 4vw, 2.25rem);
+    }
+
+    .lead {
+      color: #d8cfba;
+      font-size: 1.18rem;
+      line-height: 1.7;
+    }
+
+    .knot-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .knot-card {
+      border-radius: 22px;
+      padding: 1.25rem;
+    }
+
+    .knot-card h2,
+    .tips-section h2 {
+      margin-bottom: 0.75rem;
+      color: #f5f1e8;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .knot-card p,
+    .knot-card li,
+    .tips-section p,
+    .note-card p {
+      color: #d8cfba;
+      line-height: 1.65;
+    }
+
+    .knot-card ul {
+      margin: 1rem 0 0;
+      padding-left: 1.2rem;
+    }
+
+    .tips-section {
+      margin-top: 1.5rem;
+      border-radius: 24px;
+      padding: 1.25rem;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tips-grid div {
+      border: 1px solid rgba(228, 184, 96, 0.16);
+      border-radius: 18px;
+      background: rgba(5, 6, 5, 0.62);
+      padding: 1rem;
+    }
+
+    .tips-grid h3 {
+      margin-bottom: 0.45rem;
+      color: #e4b860;
+      font-size: 1rem;
+    }
+
+    .tips-grid p {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+    }
+
+    .image-column {
+      display: grid;
+      gap: 1rem;
+      position: sticky;
+      top: 1rem;
+    }
+
+    .image-card {
+      overflow: hidden;
+      border-radius: 28px;
+      padding: 0.75rem;
+    }
+
+    .image-card img {
+      display: block;
+      width: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+
+    .note-card {
+      border-radius: 24px;
+      padding: 1.25rem;
+    }
+
+    .note-card h3 {
+      margin-bottom: 0.55rem;
+      color: #f5f1e8;
+      font-size: 1.3rem;
+      letter-spacing: -0.04em;
+    }
+
+    .note-card p {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 900px) {
+      .article-page {
+        width: min(100% - 28px, 1180px);
+        padding: 2rem 0 4rem;
+      }
+
+      .article-card {
+        grid-template-columns: 1fr;
+      }
+
+      .image-column {
+        position: static;
+      }
+
+      .tips-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
