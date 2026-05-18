@@ -1,116 +1,406 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+/*
+  MAIN CARDS
+  These are your big core sections.
+  You probably will not change these very often.
+*/
+const mainCards = [
+  {
+    title: "Escape",
+    href: "/escape/",
+    text: "Thoughts on work, burnout, freedom, and designing a life that feels more your own.",
+  },
+  {
+    title: "Outside",
+    href: "/outside/",
+    text: "Hiking, camping, nature, gear, and the places that reset your brain.",
+  },
+  {
+    title: "Build",
+    href: "/build/",
+    text: "Side projects, websites, experiments, and learning new skills by actually making things.",
+  },
+  {
+    title: "Money",
+    href: "/money/",
+    text: "Investing, dividends, options, and the long road toward more independence.",
+  },
+  {
+    title: "Land",
+    href: "/land/",
+    text: "Homestead research, land scouting, zoning, family compound ideas, and due diligence.",
+  },
+  {
+    title: "Education",
+    href: "/education/",
+    text: "Useful learning resources, tools, guides, and websites for building a freer, more capable life.",
+  },
+];
+
+/*
+  LATEST ITEMS
+  This is the section you will update the most.
+
+  To add something new:
+  1. Copy one full item block.
+  2. Paste it at the top of this list.
+  3. Change type, title, href, and text.
+
+  Example:
+  {
+    type: "Article",
+    title: "My New Article",
+    href: "/articles/my-new-article/",
+    text: "Short description of the article.",
+  },
+*/
+const latestItems = [
+  
+  {
+    type: "Education",
+    title: "Zodiac and the Human Body",
+    href: "/zodiac/",
+    text: "Explore an old-world zodiac chart and click each sign for symbolism and traditional associations.",
+  },
+ 
+  {
+    type: "Outside",
+    title: "Fishing Knots",
+    href: "/articles/fishing-knots/",
+    text: "A quick visual field guide for improved clinch, Palomar, and blood knots.",
+  },
+  {
+    type: "Recipe",
+    title: "Hot Toddy",
+    href: "/recipes/hot-toddy/",
+    text: "A simple old-school home remedy recipe page for the site.",
+  },
+];
+
+/*
+  SECONDARY CARDS
+  These are other site sections that still matter,
+  but are not the main focus of the homepage.
+*/
+const secondaryCards = [
+  {
+    title: "Articles",
+    href: "/articles/",
+    text: "Longer notes, ideas, research, and writeups from the Makeaway project.",
+  },
+  {
+    title: "Recipes",
+    href: "/recipes/",
+    text: "Simple meals, camp cooking, homestead recipes, and practical food ideas.",
+  },
+  {
+    title: "Garden",
+    href: "/garden/",
+    text: "Growing experiments, seed starting, soil work, harvest lessons, and food production.",
+  },
+  {
+    title: "Guides",
+    href: "/guides/",
+    text: "Training material, practical references, and useful resources for building skills.",
+  },
+  {
+    title: "Game",
+    href: "/game/",
+    text: "Runes of the Way — a small game where you collect runes and make your way out.",
+  },
+  {
+    title: "Community",
+    href: "https://www.reddit.com/r/Makeaway/",
+    text: "Join r/Makeaway to share projects, ask questions, and connect with people building practical independence.",
+    external: true,
+  },
+];
 ---
 
 <BaseLayout
   title="Makeaway"
   description="A personal field guide for building a freer life through hiking, side projects, money, travel, and figuring things out along the way."
 >
-  <section class="hero">
-    <h1>A personal field guide for building a freer life.</h1>
+  <main class="home-page">
+    <section class="hero">
+      <p class="eyebrow">Make a way</p>
 
-    <p class="intro">
-      Notes on hiking, escaping the rat race, side projects, money, travel,
-      and figuring things out along the way.
-    </p>
-  </section>
+      <h1>A personal field guide for building a freer life.</h1>
 
-  <section class="cards">
-   
-    <a class="card" href="/escape">
-      <h2>Escape</h2>
-      <p>
-        Thoughts on work, burnout, freedom, and designing a life that feels
-        more your own.
+      <p class="intro">
+        Notes on hiking, escaping the rat race, side projects, money, land,
+        travel, and figuring things out along the way.
       </p>
-    </a>
+    </section>
 
-    <a class="card" href="/outside">
-      <h2>Outside</h2>
-      <p>
-        Hiking, camping, nature, gear, and the places that reset your brain.
-      </p>
-    </a>
+    <section class="section-block">
+      <div class="section-heading">
+        
+        <h2>Main Paths</h2>
+      </div>
 
-    <a class="card" href="/build">
-      <h2>Build</h2>
-      <p>
-        Side projects, websites, experiments, and learning new skills by
-        actually making things.
-      </p>
-    </a>
+      <div class="cards primary-cards">
+        {mainCards.map((card) => (
+          <a class="card" href={card.href}>
+            <h3>{card.title}</h3>
+            <p>{card.text}</p>
+          
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <a class="card" href="/game">
-      <h2>Game</h2>
-      <p>
-        Runes of the way. A small game where you collect runes to make your way out of the maze.
-      </p>
-    </a>
+    <section class="section-block latest-block">
+      <div class="section-heading">
+        <p class="eyebrow">Latest</p>
+        <h2>Latest from Makeaway</h2>
+        <p>
+          New tools, articles, guides, experiments, and reference pages added to
+          the site.
+        </p>
+      </div>
 
-    <a class="card" href="/money">
-      <h2>Money</h2>
-      <p>
-        Investing, dividends, options, and the long road toward more
-        independence.
-      </p>
-    </a>
+      <div class="latest-list">
+        {latestItems.map((item) => (
+          <a class="latest-item" href={item.href}>
+            <div>
+              <p class="item-type">{item.type}</p>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </div>
 
-    <a class="card" href="/articles">
-      <h2>Articles</h2>
-      <p>
-        Longer notes, ideas, research, and writeups from the Makeaway project.
-      </p>
-    </a>
+            <span>View →</span>
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <a class="card" href="/land">
-      <h2>Land</h2>
-      <p>
-        Research notes for the Camden County land, A-F zoning, family compound
-        possibilities, and homestead due diligence.
-      </p>
-    </a>
+    <section class="section-block">
+      <div class="section-heading">
+        
+        <h2>Other Sections</h2>
+      </div>
 
-    <a class="card" href="/education">
-      <h2>Education</h2>
-      <p>
-        Useful learning resources, tools, guides, and websites for building a
-        freer, more capable life.
-      </p>
-    </a>
+      <div class="cards secondary-cards">
+        {secondaryCards.map((card) => (
+          <a
+            class="card compact"
+            href={card.href}
+            target={card.external ? "_blank" : undefined}
+            rel={card.external ? "noopener noreferrer" : undefined}
+          >
+            <h3>{card.title}</h3>
+            <p>{card.text}</p>
+            
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
 
-    <a class="card" href="/recipes">
-      <h2>Recipes</h2>
-      <p>
-        Simple meals, camp cooking, homestead recipes, and practical food ideas
-        for building a more self-sufficient life.
-      </p>
-      <a class="card" href="/guides/">
-       
-       <h2>Guides</h2>
-      <p>
-        Practical reference guides, training material, and useful resources for
-        building skills, learning systems, and becoming more capable.
-       </p>
-        </a>
-    </a>
-        <a class="card" href="/garden">
-      <h2>Garden</h2>
-      <p>
-        Practical garden notes, growing experiments, seed starting, soil work,
-        harvest lessons, and simple ways to grow more of your own food.
-      </p>
-      <a
-  class="card"
-  href="https://www.reddit.com/r/Makeaway/"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  <h2>Community</h2>
-  <p>
-    Join r/Makeaway to share projects, ask questions, post progress, and connect
-    with people building a more practical and independent life.
-  </p>
-</a>
-    </a>
-  </section>
+  <style>
+    .home-page {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 3rem 0 5rem;
+    }
+
+    .hero {
+      margin-bottom: 3rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: #f5f3ef;
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      margin-bottom: 1.25rem;
+      color: #f0efec;
+      font-size: clamp(3.4rem, 10vw, 7.4rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+    }
+
+    .intro {
+      max-width: 820px;
+      color: #f3f1eb;
+      font-size: clamp(1.15rem, 3vw, 1.55rem);
+      line-height: 1.5;
+    }
+
+    .section-block {
+      margin-top: 2rem;
+    }
+
+    .section-heading {
+      margin-bottom: 1rem;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0.7rem;
+      color: #f1f0ee;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .section-heading p:not(.eyebrow) {
+      max-width: 760px;
+      color: #f8f8f7;
+      line-height: 1.6;
+    }
+
+    .cards {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .primary-cards,
+    .secondary-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .latest-item {
+      border: 1px solid rgba(245, 244, 241, 0.24);
+      background:
+        linear-gradient(180deg, rgba(18, 18, 15, 0.96), rgba(6, 7, 6, 0.98));
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      color: #f1efe9;
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    .card {
+      display: flex;
+      min-height: 245px;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 28px;
+      padding: 1.35rem;
+    }
+
+    .card.compact {
+      min-height: 210px;
+    }
+
+    .card:hover,
+    .latest-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(243, 242, 240, 0.58);
+      background:
+        linear-gradient(180deg, rgba(26, 24, 18, 0.98), rgba(8, 8, 7, 0.98));
+    }
+
+    .card h3 {
+      margin-bottom: 0.85rem;
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .card p {
+      color: #f0ede8;
+      line-height: 1.6;
+    }
+
+    .card span,
+    .latest-item span {
+      color: #eeedea;
+      font-weight: 900;
+    }
+
+    .latest-block {
+      border: 1px solid rgba(241, 240, 238, 0.18);
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top left, rgba(241, 240, 238, 0.1), transparent 18rem),
+        linear-gradient(180deg, rgba(15, 17, 13, 0.95), rgba(5, 6, 5, 0.98));
+      padding: clamp(1.2rem, 3vw, 2rem);
+    }
+
+    .latest-list {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .latest-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: center;
+      border-radius: 22px;
+      padding: 1rem 1.1rem;
+    }
+
+    .latest-item h3 {
+      margin-bottom: 0.35rem;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .latest-item p {
+      margin-bottom: 0;
+      color: #f3f1ed;
+      line-height: 1.5;
+    }
+
+    .item-type {
+      margin-bottom: 0.45rem !important;
+      color: #f7f4f0 !important;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      .home-page {
+        width: min(100% - 28px, 1180px);
+        padding: 2rem 0 4rem;
+      }
+
+      .primary-cards,
+      .secondary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .primary-cards,
+      .secondary-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 190px;
+      }
+
+      .latest-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </BaseLayout>
